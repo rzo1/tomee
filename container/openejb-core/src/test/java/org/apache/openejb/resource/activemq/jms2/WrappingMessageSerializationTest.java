@@ -83,7 +83,7 @@ public class WrappingMessageSerializationTest {
 
 
     @Module
-    @Classes(cdi = true, value = { JustHereToCheckDeploymentIsOk.class, Listener.class})
+    @Classes(cdi = true, value = {JustHereToCheckDeploymentIsOk.class, Listener.class})
     public MessageDrivenBean jar() {
         return new MessageDrivenBean(Listener.class);
     }
@@ -235,40 +235,16 @@ public class WrappingMessageSerializationTest {
     }
 
 
-
     @MessageDriven(activationConfig = {
             @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
             @ActivationConfigProperty(propertyName = "destination", propertyValue = "target")
     })
     public static class Listener implements MessageListener {
-        public static volatile CountDownLatch latch;
-        public static volatile boolean ok = false;
 
         @Override
         public void onMessage(final Message message) {
-            try {
-                try {
-                    ok = (TextMessage.class.isInstance(message)
-                            && TEXT.equals(TextMessage.class.cast(message).getText())
-                            && TEXT.equals(message.getBody(String.class)))
-                            || message.getStringProperty("text").equals(TEXT);
-                } catch (final JMSException e) {
-                    // no-op
-                }
-            } finally {
-                latch.countDown();
-            }
         }
 
-        public static void reset() {
-            latch = new CountDownLatch(1);
-            ok = false;
-        }
-
-        public static boolean sync() throws InterruptedException {
-            latch.await(1, TimeUnit.MINUTES);
-            return ok;
-        }
     }
 
     @TransactionScoped
