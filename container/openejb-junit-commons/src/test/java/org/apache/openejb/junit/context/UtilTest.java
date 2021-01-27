@@ -184,11 +184,11 @@ public class UtilTest {
                 break;
             }
         }
-        Assert.assertTrue("No Method exists with name: " + setterName, foundMethod);
+        assertTrue("No Method exists with name: " + setterName, foundMethod);
 
         // now check that the findSetter method returns null
         final Method ret = Util.findSetter(getClass(), field, setValue);
-        Assert.assertNull("Invalid setter returned.", ret);
+        assertNull("Invalid setter returned.", ret);
     }
 
     /**
@@ -210,12 +210,12 @@ public class UtilTest {
                 break;
             }
         }
-        Assert.assertNotNull("No Method exists with name: " + setterName, foundMethod);
+        assertNotNull("No Method exists with name: " + setterName, foundMethod);
 
         // now check that the findSetter method returns the desired valid method
         final Method ret = Util.findSetter(getClass(), field, setValue);
-        Assert.assertNotNull("Couldn't find setter.", ret);
-        Assert.assertEquals(foundMethod, ret);
+        assertNotNull("Couldn't find setter.", ret);
+        assertEquals(foundMethod, ret);
 
         return ret;
     }
@@ -243,7 +243,7 @@ public class UtilTest {
         }
 
         final Method method = Util.findSetter(getClass(), field, "ValueString");
-        Assert.assertNull("Setter found.", method);
+        assertNull("Setter found.", method);
     }
 
     @Test
@@ -257,7 +257,7 @@ public class UtilTest {
         AbstractClass.class.getDeclaredMethod(setterName, String.class);
 
         final Method method = Util.findSetter(AbstractClass.class, field, "ValueString");
-        Assert.assertNull("Abstract setter returned.", method);
+        assertNull("Abstract setter returned.", method);
     }
 
     @Test
@@ -268,7 +268,7 @@ public class UtilTest {
         findValidSetter("primitiveInstanceField", 1);
 
         final Method privateMethod = findValidSetter("privateSetter", "ValueString");
-        Assert.assertTrue(privateMethod.isAccessible());
+        assertTrue(privateMethod.isAccessible());
     }
 
     @Test
@@ -285,8 +285,8 @@ public class UtilTest {
 
         // now check that the findSetter method returns null
         final Method ret = Util.findSetter(getClass(), field, "ValueString");
-        Assert.assertNotNull("Couldn't find setter.", ret);
-        Assert.assertEquals(setterMethod, ret);
+        assertNotNull("Couldn't find setter.", ret);
+        assertEquals(setterMethod, ret);
     }
 
     @Test
@@ -303,8 +303,8 @@ public class UtilTest {
 
         // now check that the findSetter method returns null
         final Method ret = Util.findSetter(getClass(), field, "ValueString");
-        Assert.assertNotNull("Couldn't find setter.", ret);
-        Assert.assertEquals(setterMethod, ret);
+        assertNotNull("Couldn't find setter.", ret);
+        assertEquals(setterMethod, ret);
     }
 
     @Test
@@ -322,8 +322,8 @@ public class UtilTest {
 
         // now check that the findSetter method returns null
         final Method ret = Util.findSetter(getClass(), field, new NumberFormatException());
-        Assert.assertNotNull("Couldn't find setter.", ret);
-        Assert.assertEquals(setterMethod, ret);
+        assertNotNull("Couldn't find setter.", ret);
+        assertEquals(setterMethod, ret);
     }
 
     @Test
@@ -358,9 +358,9 @@ public class UtilTest {
         final Hashtable<String, String> hashtable = new Hashtable<String, String>();
         Util.addProperty(hashtable, property);
 
-        Assert.assertEquals(1, hashtable.size());
-        Assert.assertNotNull(hashtable.get(key));
-        Assert.assertEquals(value, hashtable.get(key));
+        assertEquals(1, hashtable.size());
+        assertNotNull(hashtable.get(key));
+        assertEquals(value, hashtable.get(key));
     }
 
     /**
@@ -373,9 +373,9 @@ public class UtilTest {
         try {
             final Hashtable<String, String> hashtable = new Hashtable<String, String>();
             Util.addProperty(hashtable, property);
-            Assert.fail("Add property succeeded where it shouldn't have.");
+            fail("Add property succeeded where it shouldn't have.");
         } catch (final Exception e) {
-            Assert.assertEquals(exceptionType, e.getClass());
+            assertEquals(exceptionType, e.getClass());
         }
     }
 
@@ -439,7 +439,7 @@ public class UtilTest {
      * @param expected Expected return value
      */
     private void checkIsInstance(final boolean expected, final Class<?> type, final Object instance) {
-        Assert.assertEquals(expected, Util.isInstance(type, instance));
+        assertEquals(expected, Util.isInstance(type, instance));
     }
 
     /**
@@ -451,8 +451,8 @@ public class UtilTest {
         final Method mThrowable = getClass().getDeclaredMethod("setThreeAccessibleNoExactMatchSetter", Throwable.class);
         final Method mException = getClass().getDeclaredMethod("setThreeAccessibleNoExactMatchSetter", Exception.class);
 
-        Assert.assertEquals(mThrowable, Util.getMostSpecificMethod(mObject, mThrowable));
-        Assert.assertEquals(mException, Util.getMostSpecificMethod(mException, mThrowable));
-        Assert.assertEquals(mException, Util.getMostSpecificMethod(mException, mObject));
+        assertEquals(mThrowable, Util.getMostSpecificMethod(mObject, mThrowable));
+        assertEquals(mException, Util.getMostSpecificMethod(mException, mThrowable));
+        assertEquals(mException, Util.getMostSpecificMethod(mException, mObject));
     }
 }
