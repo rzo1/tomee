@@ -36,7 +36,9 @@
     <module>openejb-javaagent</module>
     <module>openejb-jee</module>
     <module>openejb-jee-accessors</module>
-    <module>openejb-junit</module>
     <module>openejb-jpa-integration</module>
+    <module>openejb-junit</module>
+    <module>openejb-junit5</module>
+    <module>openejb-junit-commons</module>
   </modules>
 </project>

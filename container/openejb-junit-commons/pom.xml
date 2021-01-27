@@ -17,37 +17,26 @@
     limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>container</artifactId>
-    <groupId>org.apache.tomee</groupId>
-    <version>8.0.7-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <artifactId>container</artifactId>
+        <groupId>org.apache.tomee</groupId>
+        <version>8.0.7-SNAPSHOT</version>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>openejb-junit</artifactId>
-  <packaging>jar</packaging>
-  <name>TomEE :: Container :: JUnit</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>openejb-junit-commons</artifactId>
+    <packaging>jar</packaging>
+    <name>TomEE :: Container :: JUnit :: Commons</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>openejb-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>openejb-junit-commons</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
-  <properties>
-    <tomee.build.name>${project.groupId}.container.junit</tomee.build.name>
-    <netbeans.hint.license>openejb</netbeans.hint.license>
-  </properties>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>openejb-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <properties>
+        <tomee.build.name>${project.groupId}.container.junit.commons</tomee.build.name>
+        <netbeans.hint.license>openejb</netbeans.hint.license>
+    </properties>
 </project>
-
