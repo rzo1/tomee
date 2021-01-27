@@ -19,22 +19,27 @@ package org.apache.openejb.junit5;
 import org.apache.openejb.config.DeploymentFilterable;
 import org.apache.openejb.junit.jee.config.Properties;
 import org.apache.openejb.junit.jee.config.Property;
+import org.apache.openejb.junit5.ejbs.BasicEjbLocal;
 import org.apache.openejb.junit5.jee.EjbContainerExtension;
 import org.apache.openejb.junit5.jee.transaction.TransactionExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.ejb.embeddable.EJBContainer;
+import javax.inject.Inject;
 import javax.naming.Context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Properties({ // just a small conf to go faster
+
+@Properties({
     @Property(key = DeploymentFilterable.CLASSPATH_EXCLUDE, value = "jar:.*"),
     @Property(key = DeploymentFilterable.CLASSPATH_INCLUDE, value = ".*openejb-junit.*")
 })
 @ExtendWith({EjbContainerExtension.class, TransactionExtension.class})
-public class TestEJBContainerRunnerResources {
+public class TestEJBContainerExtensionWithLocalEJB {
+
     @org.apache.openejb.junit.jee.resources.TestResource
     private Context ctx;
 
@@ -44,18 +49,24 @@ public class TestEJBContainerRunnerResources {
     @org.apache.openejb.junit.jee.resources.TestResource
     private EJBContainer container;
 
-    @Test
-    public void checkCtx() {
+    @Inject
+    private BasicEjbLocal ejb;
+
+    private void doChecks() {
         assertNotNull(ctx);
-    }
-
-    @Test
-    public void checkProps() {
         assertNotNull(props);
+        assertNotNull(container);
+        assertNotNull(ejb);
+        assertEquals("a b", ejb.concat("a", "b"));
     }
 
     @Test
-    public void checkContainer() {
-        assertNotNull(container);
+    public void checkAllIsFine() {
+        doChecks();
+    }
+
+    @Test
+    public void checkAllIsStillFine() {
+        doChecks();
     }
 }

@@ -16,57 +16,37 @@
  */
 package org.apache.openejb.junit5;
 
+import org.apache.openejb.assembler.classic.Assembler;
 import org.apache.openejb.config.DeploymentFilterable;
 import org.apache.openejb.junit.jee.config.Properties;
-import org.apache.openejb.junit.jee.config.Property;
-import org.apache.openejb.junit5.ejbs.BasicEjbLocal;
 import org.apache.openejb.junit5.jee.EjbContainerExtension;
 import org.apache.openejb.junit5.jee.transaction.TransactionExtension;
+import org.apache.openejb.loader.SystemInstance;
+import org.apache.openejb.spi.ContainerSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.ejb.embeddable.EJBContainer;
-import javax.inject.Inject;
-import javax.naming.Context;
+import javax.annotation.Resource;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @Properties({
-    @Property(key = DeploymentFilterable.CLASSPATH_EXCLUDE, value = "jar:.*"),
-    @Property(key = DeploymentFilterable.CLASSPATH_INCLUDE, value = ".*openejb-junit.*")
+    @org.apache.openejb.junit.jee.config.Property(key = DeploymentFilterable.CLASSPATH_EXCLUDE, value = "jar:.*"),
+    @org.apache.openejb.junit.jee.config.Property(key = DeploymentFilterable.CLASSPATH_INCLUDE, value = ".*openejb-junit.*"),
+    @org.apache.openejb.junit.jee.config.Property(key = "r", value = "new://Resource?type=DataSource")
 })
 @ExtendWith({EjbContainerExtension.class, TransactionExtension.class})
-public class TestEJBContainerRunnerWithLocalEJB {
+public class TestResourceEJBContainerExtension {
 
-    @org.apache.openejb.junit.jee.resources.TestResource
-    private Context ctx;
-
-    @org.apache.openejb.junit.jee.resources.TestResource
-    private java.util.Properties props;
-
-    @org.apache.openejb.junit.jee.resources.TestResource
-    private EJBContainer container;
-
-    @Inject
-    private BasicEjbLocal ejb;
-
-    private void doChecks() {
-        assertNotNull(ctx);
-        assertNotNull(props);
-        assertNotNull(container);
-        assertNotNull(ejb);
-        assertEquals("a b", ejb.concat("a", "b"));
-    }
+    @Resource(name = "r")
+    private DataSource ds;
 
     @Test
-    public void checkAllIsFine() {
-        doChecks();
-    }
-
-    @Test
-    public void checkAllIsStillFine() {
-        doChecks();
+    public void checkResource() throws NamingException {
+        assertEquals(ds,   SystemInstance.get().getComponent(ContainerSystem.class)
+                .getJNDIContext().lookup("java:" + Assembler.OPENEJB_RESOURCE_JNDI_PREFIX + "r"));
     }
 }
