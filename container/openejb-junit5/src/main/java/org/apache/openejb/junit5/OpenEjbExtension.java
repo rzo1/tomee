@@ -10,7 +10,6 @@ public class OpenEjbExtension implements BeforeEachCallback, AfterEachCallback {
 
     private OpenEjbTestContext classTestContext;
 
-
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
 
@@ -30,7 +29,10 @@ public class OpenEjbExtension implements BeforeEachCallback, AfterEachCallback {
             }
             // security roles specified, create separate statements for them all
             else {
-                //FIXME implement this
+                String[] authorized = testSecurity.authorized();
+                String[] unauthorized = testSecurity.authorized();
+
+                //FIXME implement multiple testing for security annotated test
             }
         }
 

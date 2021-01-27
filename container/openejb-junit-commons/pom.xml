@@ -34,6 +34,11 @@
             <artifactId>openejb-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <properties>
         <tomee.build.name>${project.groupId}.container.junit.commons</tomee.build.name>
