@@ -53,33 +53,33 @@ public final class PropertyPlaceHolderHelper {
     }
 
     public static String simpleValue(final String raw) {
-        if (raw == null) {
-            return null;
-        }
-        if (!raw.contains(PREFIX) || !raw.contains(SUFFIX)) {
-            return String.class.cast(decryptIfNeeded(raw.replace(PREFIX, "").replace(SUFFIX, ""), false));
-        }
-
-        String value = SUBSTITUTOR.replace(raw);
-        if (!value.equals(raw) && value.startsWith("java:")) {
-            value = value.substring(5);
-        }
-        return String.class.cast(decryptIfNeeded(value.replace(PREFIX, "").replace(SUFFIX, ""), false));
+        return String.class.cast(simpleValueAsStringOrCharArray(raw, false));
     }
 
     public static Object simpleValueAsStringOrCharArray(final String raw) {
+        return simpleValueAsStringOrCharArray(raw, true);
+    }
+
+    private static Object simpleValueAsStringOrCharArray(final String raw, boolean acceptCharArray) {
         if (raw == null) {
             return null;
         }
         if (!raw.contains(PREFIX) || !raw.contains(SUFFIX)) {
-            return decryptIfNeeded(raw.replace(PREFIX, "").replace(SUFFIX, ""), true);
+            // do not strip prefix / suffix if only one or none is contained (TOMEE-2968)
+            return decryptIfNeeded(raw, acceptCharArray);
         }
 
         String value = SUBSTITUTOR.replace(raw);
         if (!value.equals(raw) && value.startsWith("java:")) {
             value = value.substring(5);
         }
-        return decryptIfNeeded(value.replace(PREFIX, "").replace(SUFFIX, ""), true);
+
+        if (!value.contains(PREFIX) || !value.contains(SUFFIX)) {
+            // do not strip prefix / suffix if only one or none is contained (TOMEE-2968)
+            return decryptIfNeeded(value, acceptCharArray);
+        }
+
+        return decryptIfNeeded(value.replace(PREFIX, "").replace(SUFFIX, ""), acceptCharArray);
     }
 
     private static Object decryptIfNeeded(final String replace, final boolean acceptCharArray) {
