@@ -88,4 +88,20 @@ public class PropertyPlaceHolderTest {
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("tiger...}");
         assertEquals("tiger...}", foo);
     }
+
+    @Test //TOMEE-2968
+    public void singleCurlyBraceWithSubstitution() {
+        SystemInstance.get().setProperty("PropertyPlaceHolderTest1", "tiger...}");
+        SystemInstance.get().setProperty("PropertyPlaceHolderTest2", "due");
+        final String foo = PropertyPlaceHolderHelper.simpleValue("${PropertyPlaceHolderTest1}/${PropertyPlaceHolderTest2}");
+        assertEquals("tiger...}/due", foo);
+    }
+
+    @Test //TOMEE-2968
+    public void singleCurlyBraceAsStringOrCharArrayWithSubstitution() {
+        SystemInstance.get().setProperty("PropertyPlaceHolderTest1", "tiger...}");
+        SystemInstance.get().setProperty("PropertyPlaceHolderTest2", "due");
+        final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${PropertyPlaceHolderTest1}/${PropertyPlaceHolderTest2}");
+        assertEquals("tiger...}/due", foo);
+    }
 }
