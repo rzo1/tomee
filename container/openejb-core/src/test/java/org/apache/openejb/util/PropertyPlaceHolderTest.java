@@ -217,4 +217,20 @@ public class PropertyPlaceHolderTest {
         assertEquals("foo.bar", foo);
     }
 
+    @Test
+    public void nestedPropertiesKeyAsStringOrCharArray() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("bar.bar", "val");
+        final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${${foo}.bar}");
+        assertEquals("val", foo);
+    }
+
+    @Test
+    public void nestedPropertiesKey() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("bar.bar", "val");
+        final String foo = PropertyPlaceHolderHelper.simpleValue("${${foo}.bar}");
+        assertEquals("val", foo);
+    }
+
 }
