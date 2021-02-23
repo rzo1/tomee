@@ -128,7 +128,7 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("{foo}", "bar");
         //$ is treated as an escape character, thus skipping substitution of variable with key = '{foo}'.
         final String foo = PropertyPlaceHolderHelper.simpleValue("$${{foo}}");
-        assertEquals("$${{foo}}", foo);
+        assertEquals("${{foo}}", foo);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("{foo}", "bar");
         //$ is treated as an escape character, thus skipping substitution of variable with key = '{foo}'.
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("$${{foo}}");
-        assertEquals("$${{foo}}", foo);
+        assertEquals("${{foo}}", foo);
     }
 
     @Test
@@ -231,6 +231,22 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("bar.bar", "val");
         final String foo = PropertyPlaceHolderHelper.simpleValue("${${foo}.bar}");
         assertEquals("val", foo);
+    }
+
+    @Test
+    public void escapedPropertyKey() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("bar", "val");
+        final String foo = PropertyPlaceHolderHelper.simpleValue("$${foo}.${bar}");
+        assertEquals("${foo}.val", foo);
+    }
+
+    @Test
+    public void escapedPropertyKeyAsStringOrCharArray() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("bar", "val");
+        final Object foo = PropertyPlaceHolderHelper.simpleValue("$${foo}.${bar}");
+        assertEquals("${foo}.val", foo);
     }
 
 }

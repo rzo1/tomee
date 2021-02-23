@@ -70,21 +70,18 @@ public final class PropertyPlaceHolderHelper {
             return decryptIfNeeded(raw, acceptCharArray);
         }
 
-        //skip early, if expression starts with an escape sequence...
-        if(raw.startsWith(ESCAPE_SEQUENCE)) {
-            return decryptIfNeeded(raw, acceptCharArray);
-        }
-
         String value = SUBSTITUTOR.replace(raw);
 
         if (!value.equals(raw) && value.startsWith("java:")) {
             value = value.substring(5);
         }
 
-        // no key defined for replacement -> substitute to key instead
-        if (!value.contains(ESCAPE_SEQUENCE) && value.contains(PREFIX) && value.contains(SUFFIX)) {
+        // no key defined and no escape sequence found -> substitute to key instead
+        if (!(raw.contains(ESCAPE_SEQUENCE) || value.contains(ESCAPE_SEQUENCE))
+                && value.contains(PREFIX) && value.contains(SUFFIX)) {
             return decryptIfNeeded(value.replace(PREFIX, "").replace(SUFFIX, ""), acceptCharArray);
         }
+
         return decryptIfNeeded(value, acceptCharArray);
     }
 
