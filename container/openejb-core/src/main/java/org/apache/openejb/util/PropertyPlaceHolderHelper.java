@@ -65,7 +65,6 @@ public final class PropertyPlaceHolderHelper {
             return null;
         }
         if (!raw.contains(PREFIX) || !raw.contains(SUFFIX)) {
-            // do not strip prefix / suffix if only one or none is contained (TOMEE-2968)
             return decryptIfNeeded(raw, acceptCharArray);
         }
 
@@ -74,12 +73,7 @@ public final class PropertyPlaceHolderHelper {
             value = value.substring(5);
         }
 
-        if (!value.contains(PREFIX) || !value.contains(SUFFIX)) {
-            // do not strip prefix / suffix if only one or none is contained (TOMEE-2968)
-            return decryptIfNeeded(value, acceptCharArray);
-        }
-
-        return decryptIfNeeded(value.replace(PREFIX, "").replace(SUFFIX, ""), acceptCharArray);
+        return decryptIfNeeded(value, acceptCharArray);
     }
 
     private static Object decryptIfNeeded(final String replace, final boolean acceptCharArray) {
