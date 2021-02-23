@@ -65,8 +65,7 @@ public class PropertyPlaceHolderTest {
 
     @Test
     public void noValueFound() {
-        //no value found -> noop
-        assertEquals("${v}", PropertyPlaceHolderHelper.simpleValue("${v}"));
+        assertEquals("v", PropertyPlaceHolderHelper.simpleValue("${v}"));
     }
 
     @Test
@@ -129,7 +128,7 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("{foo}", "bar");
         //$ is treated as an escape character, thus skipping substitution of variable with key = '{foo}'.
         final String foo = PropertyPlaceHolderHelper.simpleValue("$${{foo}}");
-        assertEquals("${{foo}}", foo);
+        assertEquals("$${{foo}}", foo);
     }
 
     @Test
@@ -137,7 +136,7 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("{foo}", "bar");
         //$ is treated as an escape character, thus skipping substitution of variable with key = '{foo}'.
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("$${{foo}}");
-        assertEquals("${{foo}}", foo);
+        assertEquals("$${{foo}}", foo);
     }
 
     @Test
@@ -175,17 +174,17 @@ public class PropertyPlaceHolderTest {
     @Test
     public void combinedNestingWithNonExistentKey() {
         SystemInstance.get().setProperty("foo", "bar");
-        //variable for key 'bar' does not exist -> returning original input for this variable
+        //variable for key 'bar' does not exist
         final String foo = PropertyPlaceHolderHelper.simpleValue("${foo}-${${bar}}");
-        assertEquals("bar-${${bar}}", foo);
+        assertEquals("bar-bar", foo);
     }
 
     @Test
     public void combinedNestingWithNonExistentKeyAsStringOrCharArray() {
         SystemInstance.get().setProperty("foo", "bar");
-        //variable for key 'bar' does not exist -> returning original input for this variable
+        //variable for key 'bar' does not exist
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${foo}-${${bar}}");
-        assertEquals("bar-${${bar}}", foo);
+        assertEquals("bar-bar", foo);
     }
 
     @Test
@@ -204,6 +203,18 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("bar", "yammie");
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${bar}/${${foo}}");
         assertEquals("yammie/food", foo);
+    }
+
+    @Test
+    public void nestedMissingPropertiesKeyAsStringOrCharArray() {
+        final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${${foo}.bar}");
+        assertEquals("foo.bar", foo);
+    }
+
+    @Test
+    public void nestedMissingPropertiesKey() {
+        final String foo = PropertyPlaceHolderHelper.simpleValue("${${foo}.bar}");
+        assertEquals("foo.bar", foo);
     }
 
 }
