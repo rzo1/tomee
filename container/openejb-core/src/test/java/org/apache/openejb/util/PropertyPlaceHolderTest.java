@@ -76,4 +76,16 @@ public class PropertyPlaceHolderTest {
         final String foo = PropertyPlaceHolderHelper.simpleValue("jdbc://${PropertyPlaceHolderTest1}/${PropertyPlaceHolderTest2}");
         assertEquals("jdbc://uno/due", foo);
     }
+
+    @Test //TOMEE-2968
+    public void singleCurlyBrace() {
+        final String foo = PropertyPlaceHolderHelper.simpleValue("tiger...}");
+        assertEquals("tiger...}", foo);
+    }
+
+    @Test //TOMEE-2968
+    public void singleCurlyBraceAsStringOrCharArray() {
+        final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("tiger...}");
+        assertEquals("tiger...}", foo);
+    }
 }
