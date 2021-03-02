@@ -157,18 +157,18 @@ public class PropertyPlaceHolderTest {
 
     @Test
     public void escapedNestingWithNonExistentKey() {
-        SystemInstance.get().setProperty("foo", "bar");
-        //variable for key '$${foo}' does not exist (as $ is treated as an escape character) -> returning original input
+        SystemInstance.get().setProperty("bar", "bar");
+        //'$${foo}' is substituted to '${foo}', which does not exist. `${foo}` is thus substituted to its key `foo`.
         final String foo = PropertyPlaceHolderHelper.simpleValue("${$${foo}}");
-        assertEquals("${$${foo}}", foo);
+        assertEquals("foo", foo);
     }
 
     @Test
     public void escapedNestingWithNonExistentKeyAsStringOrCharArray() {
-        SystemInstance.get().setProperty("foo", "bar");
-        //variable for key '$${foo}' does not exist (as $ is treated as an escape character) -> returning original input
+        SystemInstance.get().setProperty("bar", "bar");
+        //'$${foo}' is substituted to '${foo}', which does not exist. `${foo}` is thus substituted to its key `foo`.
         final Object foo = PropertyPlaceHolderHelper.simpleValueAsStringOrCharArray("${$${foo}}");
-        assertEquals("${$${foo}}", foo);
+        assertEquals("foo", foo);
     }
 
     @Test
@@ -247,6 +247,22 @@ public class PropertyPlaceHolderTest {
         SystemInstance.get().setProperty("bar", "val");
         final Object foo = PropertyPlaceHolderHelper.simpleValue("$${foo}.${bar}");
         assertEquals("${foo}.val", foo);
+    }
+
+    @Test
+    public void escapedPropertyKeyUnknownAndKnownVar() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("known", "bar");
+        final String foo = PropertyPlaceHolderHelper.simpleValue("${bar}.$${foo}.${known}");
+        assertEquals("bar.${foo}.bar", foo);
+    }
+
+    @Test
+    public void escapedPropertyKeyUnknownAndKnownVarAsStringOrCharArray() {
+        SystemInstance.get().setProperty("foo", "bar");
+        SystemInstance.get().setProperty("known", "bar");
+        final Object foo = PropertyPlaceHolderHelper.simpleValue("${bar}.$${foo}.${known}");
+        assertEquals("bar.${foo}.bar", foo);
     }
 
 }
