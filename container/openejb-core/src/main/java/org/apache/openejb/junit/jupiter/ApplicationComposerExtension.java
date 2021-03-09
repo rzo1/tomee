@@ -44,7 +44,7 @@ public class ApplicationComposerExtension implements BeforeAllCallback, BeforeEa
         Optional<TestInstances> oTestInstances = context.getTestInstances();
 
         if(!oTestInstances.isPresent()) {
-            throw new OpenEJBRuntimeException("Not test instances available for given test context.");
+            throw new OpenEJBRuntimeException("No test instances available for given test context.");
         }
 
         List<Object> testInstances = oTestInstances.get().getAllInstances();

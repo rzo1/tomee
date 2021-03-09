@@ -39,7 +39,7 @@ import static org.apache.openejb.loader.JarLocation.jarLocation;
 public class SingleApplicationComposerExtension implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
 
     private static volatile boolean started = false;
-    private static final AtomicReference APP = new AtomicReference<>();
+    private static final AtomicReference<Object> APP = new AtomicReference<>();
     private static final AtomicReference<Thread> HOOK = new AtomicReference<>();
 
     @Override
@@ -48,7 +48,7 @@ public class SingleApplicationComposerExtension implements BeforeAllCallback, Be
             Optional<TestInstances> oTestInstances = context.getTestInstances();
 
             if(!oTestInstances.isPresent()) {
-                throw new OpenEJBRuntimeException("Not test instances available for given test context.");
+                throw new OpenEJBRuntimeException("No test instances available for given test context.");
             }
 
             List<Object> testInstances = oTestInstances.get().getAllInstances();
