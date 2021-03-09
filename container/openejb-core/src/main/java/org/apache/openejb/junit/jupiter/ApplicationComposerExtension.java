@@ -20,28 +20,51 @@ import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;
 import org.junit.jupiter.api.extension.*;
 
-public class ApplicationComposerExtension implements BeforeEachCallback, AfterEachCallback {
+import java.util.List;
 
-    private ApplicationComposers delegate;
+public class ApplicationComposerExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
+
+    @Override
+    public void beforeAll(ExtensionContext context) {
+        storeDelegateInContext(context, new ApplicationComposers(context.getRequiredTestClass()));
+    }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        delegate = new ApplicationComposers(context.getRequiredTestInstance());
-        try {
-            delegate.before(context.getRequiredTestInstance());
-        } catch (final Exception e) {
-            throw new OpenEJBRuntimeException(e);
+        List<Object> testInstances = context.getRequiredTestInstances().getAllInstances();
+
+        Object delegate = getDelegateFromContext(context);
+
+        if (delegate instanceof ApplicationComposers) {
+            testInstances.forEach(t -> {
+                try {
+                    ((ApplicationComposers) delegate).before(t);
+                } catch (Exception e) {
+                    throw new OpenEJBRuntimeException(e);
+                }
+            });
         }
     }
 
     @Override
     public void afterEach(ExtensionContext context) {
-        if (delegate != null) {
+        Object delegate = getDelegateFromContext(context);
+        if (delegate instanceof ApplicationComposers) {
             try {
-                delegate.after();
+                ((ApplicationComposers) delegate).after();
             } catch (final Exception e) {
                 throw new OpenEJBRuntimeException(e);
             }
         }
     }
+
+    private void storeDelegateInContext(ExtensionContext context, ApplicationComposers delegate) {
+        context.getRoot().getStore(ExtensionContext.Namespace.create(ApplicationComposerExtension.class)).put("delegate", delegate);
+    }
+
+    private Object getDelegateFromContext(ExtensionContext context) {
+        return context.getRoot().getStore(ExtensionContext.Namespace.create(ApplicationComposerExtension.class)).get("delegate");
+    }
+
+
 }
