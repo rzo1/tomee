@@ -19,7 +19,7 @@ package org.superbiz.composed;
 import org.apache.openejb.jee.EjbJar;
 import org.apache.openejb.jee.StatefulBean;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //START SNIPPET: code
-@ApplicationComposerExtension //syntactic sugar for @ExtendedWith(ApplicationComposerExtension.class)
+@RunWithApplicationComposer //syntactic sugar for @ExtendedWith(ApplicationComposerExtension.class)
 public class MoviesTest {
 
     @EJB

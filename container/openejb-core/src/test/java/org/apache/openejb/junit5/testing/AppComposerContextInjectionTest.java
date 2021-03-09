@@ -18,7 +18,7 @@ package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.EnterpriseBean;
 import org.apache.openejb.jee.SingletonBean;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.rest.ThreadLocalContextManager;
 import org.apache.openejb.testing.AppResource;
 import org.apache.openejb.testing.Module;
@@ -32,7 +32,7 @@ import java.security.Principal;
 
 import static org.junit.Assert.*;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class AppComposerContextInjectionTest {
     @Module
     public EnterpriseBean bean() {

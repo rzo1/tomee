@@ -17,7 +17,7 @@
 package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.EjbJar;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.AppResource;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
@@ -28,7 +28,7 @@ import javax.naming.NamingException;
 
 import static org.junit.Assert.assertNotNull;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class AppComposerOpenejbConfigTest {
     @Configuration
     public String openejbXmlPath() {

@@ -5,7 +5,7 @@
 
 The `org.apache.openejb.junit.jupiter.ApplicationComposerExtension` is a **JUnit 5 extension**  internally re-using `ApplicationComposers`, which has been used in the JUnit test runner ( `ApplicationComposer`) for testing OpenEJB in recent years. It involves no classpath scanning at all. If you want something to be in the app, you must build it directly in your testcase.
 
-With the `ApplicationComposerExtension` you can do identical testing that OpenEJB uses internally, but with limited dependency on OpenEJB itself.
+With the `RunWithApplicationComposer` you can do identical testing that OpenEJB uses internally, but with limited dependency on OpenEJB itself.
 The main dependency is on the code that is used to build the actual applications:
 
 [source,xml]
@@ -51,7 +51,7 @@ Used in an actual testcase, that might look like so:
 import org.apache.openejb.jee.EjbJar;
 import org.apache.openejb.jee.StatefulBean;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;

@@ -17,7 +17,7 @@
 package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertNotNull;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class AddInnerTest {
     @Module
     @Classes(innerClassesAsBean = true, cdi = true)

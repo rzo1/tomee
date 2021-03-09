@@ -18,7 +18,7 @@ package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.EnvEntry;
 import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import javax.naming.NamingException;
 
 import static org.junit.Assert.assertEquals;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class WebAppEnvEntryTest {
     @Module
     @Classes(cdi = true, value = {CdiBean.class})

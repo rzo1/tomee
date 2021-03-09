@@ -18,7 +18,7 @@ package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.SessionBean;
 import org.apache.openejb.jee.SingletonBean;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertTrue;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class PreDestroyTest {
 
     private static final AtomicBoolean isConstructed = new AtomicBoolean(false);

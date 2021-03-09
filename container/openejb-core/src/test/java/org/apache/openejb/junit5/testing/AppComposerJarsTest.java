@@ -18,7 +18,7 @@ package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.itest.failover.ejb.Calculator;
 import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Jars;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import javax.ejb.EJB;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class AppComposerJarsTest {
     @Module
     @Jars("failover-ejb-")

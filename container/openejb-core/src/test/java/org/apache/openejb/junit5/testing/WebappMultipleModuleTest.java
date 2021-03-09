@@ -18,7 +18,7 @@ package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.jpa.unit.Persistence;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.CdiExtensions;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 @CdiExtensions(WebappMultipleModuleTest.SuperViciousExtension.class)
 @Classes(cdi = true, innerClassesAsBean = true)
 public class WebappMultipleModuleTest {

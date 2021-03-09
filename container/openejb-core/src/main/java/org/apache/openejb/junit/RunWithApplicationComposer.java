@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(org.apache.openejb.junit.jupiter.ApplicationComposerExtension.class)
-public @interface ApplicationComposerExtension  {
+public @interface RunWithApplicationComposer {
 
 }

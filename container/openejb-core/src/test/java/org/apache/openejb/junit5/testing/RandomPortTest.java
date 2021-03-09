@@ -17,7 +17,7 @@
 package org.apache.openejb.junit5.testing;
 
 import org.apache.openejb.jee.EjbJar;
-import org.apache.openejb.junit.ApplicationComposerExtension;
+import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.Module;
 import org.apache.openejb.testing.RandomPort;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import java.net.URL;
 
 import static org.junit.Assert.*;
 
-@ApplicationComposerExtension
+@RunWithApplicationComposer
 public class RandomPortTest {
     @Module
     public EjbJar jar() {
