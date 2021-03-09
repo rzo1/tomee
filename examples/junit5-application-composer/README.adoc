@@ -66,7 +66,7 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ApplicationComposerExtension //syntactic sugar for @ExtendedWith(ApplicationComposerExtension.class)
+@RunWithApplicationComposer //syntactic sugar for @ExtendedWith(ApplicationComposerExtension.class)
 public class MoviesTest {
 
     @EJB
