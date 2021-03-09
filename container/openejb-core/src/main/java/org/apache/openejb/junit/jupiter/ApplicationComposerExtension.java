@@ -21,17 +21,33 @@ import org.apache.openejb.testing.ApplicationComposers;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ApplicationComposerExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
 
+    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApplicationComposerExtension.class.getName());
+
     @Override
     public void beforeAll(ExtensionContext context) {
-        storeDelegateInContext(context, new ApplicationComposers(context.getRequiredTestClass()));
+        Optional<Class<?>> oClazz = context.getTestClass();
+
+        if (!oClazz.isPresent()) {
+            throw new RuntimeException("Could not get test class from extension context");
+        }
+
+        storeDelegateInContext(context, new ApplicationComposers(oClazz.get()));
     }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        List<Object> testInstances = context.getRequiredTestInstances().getAllInstances();
+
+        Optional<TestInstances> oTestInstances = context.getTestInstances();
+
+        if(!oTestInstances.isPresent()) {
+            throw new OpenEJBRuntimeException("Not test instances available for given test context.");
+        }
+
+        List<Object> testInstances = oTestInstances.get().getAllInstances();
 
         Object delegate = getDelegateFromContext(context);
 
@@ -59,11 +75,11 @@ public class ApplicationComposerExtension implements BeforeAllCallback, BeforeEa
     }
 
     private void storeDelegateInContext(ExtensionContext context, ApplicationComposers delegate) {
-        context.getRoot().getStore(ExtensionContext.Namespace.create(ApplicationComposerExtension.class)).put("delegate", delegate);
+        context.getStore(NAMESPACE).put("delegate", delegate);
     }
 
     private Object getDelegateFromContext(ExtensionContext context) {
-        return context.getRoot().getStore(ExtensionContext.Namespace.create(ApplicationComposerExtension.class)).get("delegate");
+        return context.getStore(NAMESPACE).get("delegate");
     }
 
 

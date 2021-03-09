@@ -26,14 +26,12 @@ import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.inject.OWBInjector;
 import org.apache.xbean.finder.AnnotationFinder;
 import org.apache.xbean.finder.archive.FileArchive;
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.openejb.loader.JarLocation.jarLocation;
@@ -47,7 +45,13 @@ public class SingleApplicationComposerExtension implements BeforeAllCallback, Be
     @Override
     public void beforeEach(ExtensionContext context) {
         try {
-            List<Object> testInstances = context.getRequiredTestInstances().getAllInstances();
+            Optional<TestInstances> oTestInstances = context.getTestInstances();
+
+            if(!oTestInstances.isPresent()) {
+                throw new OpenEJBRuntimeException("Not test instances available for given test context.");
+            }
+
+            List<Object> testInstances = oTestInstances.get().getAllInstances();
 
             testInstances.forEach(t -> {
                 try {
@@ -65,7 +69,12 @@ public class SingleApplicationComposerExtension implements BeforeAllCallback, Be
     @Override
     public void beforeAll(ExtensionContext context) {
         try {
-            start(context.getRequiredTestClass());
+            Optional<Class<?>> oClazz = context.getTestClass();
+
+            if (!oClazz.isPresent()) {
+                throw new RuntimeException("Could not get test class from extension context");
+            }
+            start(oClazz.get());
         } catch (final Exception e) {
             throw new OpenEJBRuntimeException(e);
         }
