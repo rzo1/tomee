@@ -17,6 +17,7 @@
 
 package org.apache.openejb.junit;
 
+import org.apache.openejb.junit.jupiter.ExtensionMode;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;
@@ -29,4 +30,8 @@ import java.lang.annotation.Target;
 @ExtendWith(org.apache.openejb.junit.jupiter.SingleApplicationComposerExtension.class)
 public @interface RunWithSingleApplicationComposer {
 
+    /**
+     * The test container lifecycle <em>mode</em> to use.
+     */
+    ExtensionMode mode() default ExtensionMode.AUTO;
 }

@@ -14,24 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.openejb.junit.jupiter;
 
-package org.apache.openejb.junit;
-
-import org.apache.openejb.junit.jupiter.ExtensionMode;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(org.apache.openejb.junit.jupiter.ApplicationComposerExtension.class)
-public @interface RunWithApplicationComposer {
+public enum ExtensionMode {
 
     /**
-     * The test container lifecycle <em>mode</em> to use.
+     * When using this mode, a container instance will be created once for the JVM lifetime.
      */
-    ExtensionMode mode() default ExtensionMode.AUTO;
+    PER_JVM,
+
+    /**
+     * When using this mode, a container instance will be created for each test class
+     */
+    PER_ALL,
+
+    /**
+     * When using this mode, a container instance will be created for each test
+     */
+    PER_EACH,
+
+    AUTO;
+
 }

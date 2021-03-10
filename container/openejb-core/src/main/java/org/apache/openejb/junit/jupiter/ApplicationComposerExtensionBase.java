@@ -16,6 +16,8 @@
  */
 package org.apache.openejb.junit.jupiter;
 
+import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit.RunWithSingleApplicationComposer;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -25,5 +27,24 @@ public class ApplicationComposerExtensionBase {
         return context.getTestInstanceLifecycle()
                 .map(it -> it.equals(TestInstance.Lifecycle.PER_CLASS))
                 .orElse(false);
+    }
+
+    ExtensionMode getMode(final ExtensionContext context) {
+        if (context.getTestClass().isPresent()) {
+            Class<?> clazz = context.getTestClass().get();
+
+            RunWithApplicationComposer a = clazz.getAnnotation(RunWithApplicationComposer.class);
+            if (a != null) {
+                return a.mode();
+            }
+
+            RunWithSingleApplicationComposer b = clazz.getAnnotation(RunWithSingleApplicationComposer.class);
+            if (b != null) {
+                return b.mode();
+            }
+
+        }
+        return ExtensionMode.AUTO;
+
     }
 }
