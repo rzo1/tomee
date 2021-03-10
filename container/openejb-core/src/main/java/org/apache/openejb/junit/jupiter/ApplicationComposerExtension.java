@@ -18,69 +18,105 @@ package org.apache.openejb.junit.jupiter;
 
 import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-public class ApplicationComposerExtension implements BeforeAllCallback, BeforeEachCallback, AfterEachCallback {
+public class ApplicationComposerExtension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApplicationComposerExtension.class.getName());
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Optional<Class<?>> oClazz = context.getTestClass();
-
-        if (!oClazz.isPresent()) {
-            throw new RuntimeException("Could not get test class from extension context");
+        if (isPerClass(context)) {
+            doStart(context);
         }
-
-        storeDelegateInContext(context, new ApplicationComposers(oClazz.get()));
     }
 
     @Override
+    public void afterAll(ExtensionContext context) throws Exception {
+        final ExtensionContext.Store store = context.getStore(NAMESPACE);
+
+        if (isPerClass(context)) {
+            store.get(ApplicationComposers.class, ApplicationComposers.class).after();
+        }
+    }
+
+
+    @Override
     public void beforeEach(ExtensionContext context) {
+        if (!isPerClass(context)) {
+            doStart(context);
+        }
+    }
 
-        Optional<TestInstances> oTestInstances = context.getTestInstances();
+    @Override
+    public void afterEach(ExtensionContext context) throws Exception {
+        if (!isPerClass(context)) {
+            context.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
+        }
+    }
 
-        if(!oTestInstances.isPresent()) {
-            throw new OpenEJBRuntimeException("No test instances available for given test context.");
+    private void doStart(final ExtensionContext extensionContext) {
+
+        Optional<Class<?>> oClazz = extensionContext.getTestClass();
+
+        if (!oClazz.isPresent()) {
+            throw new OpenEJBRuntimeException("Could not get test class from the given extension context.");
+        }
+
+        extensionContext.getStore(NAMESPACE).put(ApplicationComposers.class,
+                new ApplicationComposers(oClazz.get(), getAdditionalModules(oClazz.get())));
+
+        doInject(extensionContext);
+    }
+
+    private void doInject(final ExtensionContext extensionContext) {
+        Optional<TestInstances> oTestInstances = extensionContext.getTestInstances();
+
+        if (!oTestInstances.isPresent()) {
+            throw new OpenEJBRuntimeException("No test instances available for the given extension context.");
         }
 
         List<Object> testInstances = oTestInstances.get().getAllInstances();
 
-        Object delegate = getDelegateFromContext(context);
+        ApplicationComposers delegate = extensionContext.getStore(NAMESPACE)
+                .get(ApplicationComposers.class, ApplicationComposers.class);
 
-        if (delegate instanceof ApplicationComposers) {
-            testInstances.forEach(t -> {
-                try {
-                    ((ApplicationComposers) delegate).before(t);
-                } catch (Exception e) {
-                    throw new OpenEJBRuntimeException(e);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void afterEach(ExtensionContext context) {
-        Object delegate = getDelegateFromContext(context);
-        if (delegate instanceof ApplicationComposers) {
+        testInstances.forEach(t -> {
             try {
-                ((ApplicationComposers) delegate).after();
-            } catch (final Exception e) {
+                delegate.before(t);
+            } catch (Exception e) {
                 throw new OpenEJBRuntimeException(e);
             }
+        });
+
+    }
+
+    private Object[] getAdditionalModules(final Class<?> clazz) {
+        return Arrays.stream(clazz.getClasses())
+                .map(this::newInstance)
+                .filter(Objects::nonNull)
+                .toArray();
+    }
+
+    private Object newInstance(final Class<?> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            //no-op
         }
+        return null;
     }
 
-    private void storeDelegateInContext(ExtensionContext context, ApplicationComposers delegate) {
-        context.getStore(NAMESPACE).put("delegate", delegate);
+    private boolean isPerClass(final ExtensionContext context) {
+        return context.getTestInstanceLifecycle()
+                .map(it -> it.equals(TestInstance.Lifecycle.PER_CLASS))
+                .orElse(false);
     }
-
-    private Object getDelegateFromContext(ExtensionContext context) {
-        return context.getStore(NAMESPACE).get("delegate");
-    }
-
 
 }
