@@ -18,7 +18,6 @@ package org.apache.openejb.junit.jupiter;
 
 import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ApplicationComposerExtension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class ApplicationComposerExtension extends ApplicationComposerExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApplicationComposerExtension.class.getName());
 
@@ -113,10 +112,6 @@ public class ApplicationComposerExtension implements BeforeAllCallback, AfterAll
         return null;
     }
 
-    private boolean isPerClass(final ExtensionContext context) {
-        return context.getTestInstanceLifecycle()
-                .map(it -> it.equals(TestInstance.Lifecycle.PER_CLASS))
-                .orElse(false);
-    }
+
 
 }
