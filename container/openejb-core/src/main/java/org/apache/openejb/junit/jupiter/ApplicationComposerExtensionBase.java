@@ -17,7 +17,6 @@
 package org.apache.openejb.junit.jupiter;
 
 import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.junit.RunWithSingleApplicationComposer;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -29,20 +28,33 @@ public class ApplicationComposerExtensionBase {
                 .orElse(false);
     }
 
-    ExtensionMode getMode(final ExtensionContext context) {
-        if (context.getTestClass().isPresent()) {
-            Class<?> clazz = context.getTestClass().get();
+    boolean isPerEach(final ExtensionContext context) {
+        return checkMode(context, ExtensionMode.PER_EACH);
+    }
 
-            RunWithApplicationComposer a = clazz.getAnnotation(RunWithApplicationComposer.class);
+    boolean isPerAll(final ExtensionContext context) {
+        return checkMode(context, ExtensionMode.PER_ALL);
+    }
+
+    boolean isPerJvm(final ExtensionContext context) {
+        return checkMode(context, ExtensionMode.PER_JVM);
+    }
+
+    boolean isPerDefault(final ExtensionContext context) {
+        return checkMode(context, ExtensionMode.AUTO);
+    }
+
+    boolean checkMode(final ExtensionContext context, ExtensionMode extensionMode ) {
+       return extensionMode == getModeFromAnnotation(context);
+    }
+
+    ExtensionMode getModeFromAnnotation(final ExtensionContext context) {
+        if (context.getTestClass().isPresent()) {
+
+            RunWithApplicationComposer a = context.getTestClass().get().getAnnotation(RunWithApplicationComposer.class);
             if (a != null) {
                 return a.mode();
             }
-
-            RunWithSingleApplicationComposer b = clazz.getAnnotation(RunWithSingleApplicationComposer.class);
-            if (b != null) {
-                return b.mode();
-            }
-
         }
         return ExtensionMode.AUTO;
 

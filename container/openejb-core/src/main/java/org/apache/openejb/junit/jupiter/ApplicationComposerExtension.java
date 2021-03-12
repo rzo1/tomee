@@ -18,6 +18,7 @@ package org.apache.openejb.junit.jupiter;
 
 import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;
+import org.apache.openejb.testing.SingleApplicationComposerBase;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.Arrays;
@@ -28,35 +29,65 @@ import java.util.Optional;
 public class ApplicationComposerExtension extends ApplicationComposerExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApplicationComposerExtension.class.getName());
+    private static final SingleApplicationComposerBase BASE = new SingleApplicationComposerBase();
 
     @Override
-    public void beforeAll(ExtensionContext context) {
-        if (isPerClass(context)) {
+    public void beforeAll(ExtensionContext context) throws Exception {
+
+        if (isPerJvm(context)) {
+            BASE.start(context.getTestClass().orElse(null));
+        } else if (isPerAll(context)) {
             doStart(context);
+        } else if (isPerDefault(context)) {
+            if (isPerClass(context)) {
+                doStart(context);
+            }
+        }
+
+        if (isPerClass(context)) {
+            doInject(context);
         }
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        final ExtensionContext.Store store = context.getStore(NAMESPACE);
-
-        if (isPerClass(context)) {
-            store.get(ApplicationComposers.class, ApplicationComposers.class).after();
+        if (isPerJvm(context) || isPerAll(context)) {
+            doRelease(context);
+        } else if (isPerDefault(context) && isPerClass(context)) {
+            doRelease(context);
         }
     }
 
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        if (!isPerClass(context)) {
+
+        if (isPerEach(context)) {
             doStart(context);
+        } else if (isPerDefault(context) && !isPerClass(context)) {
+            doStart(context);
+        }
+
+        if (!isPerClass(context)) {
+            doInject(context);
         }
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        if (!isPerClass(context)) {
-            context.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
+        if (isPerEach(context)) {
+            doRelease(context);
+        } else if (isPerDefault(context) && !isPerClass(context)) {
+            doRelease(context);
+        }
+    }
+
+    private void doRelease(final ExtensionContext extensionContext) throws Exception {
+        if (isPerJvm(extensionContext)) {
+            //FIXME how to release / close after last test class execution?
+            BASE.close();
+        } else {
+            extensionContext.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
         }
     }
 
@@ -71,7 +102,6 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
         extensionContext.getStore(NAMESPACE).put(ApplicationComposers.class,
                 new ApplicationComposers(oClazz.get(), getAdditionalModules(oClazz.get())));
 
-        doInject(extensionContext);
     }
 
     private void doInject(final ExtensionContext extensionContext) {
@@ -83,17 +113,26 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
         List<Object> testInstances = oTestInstances.get().getAllInstances();
 
-        ApplicationComposers delegate = extensionContext.getStore(NAMESPACE)
-                .get(ApplicationComposers.class, ApplicationComposers.class);
+        if (isPerJvm(extensionContext)) {
+            testInstances.forEach(t -> {
+                try {
+                    BASE.composerInject(t);
+                } catch (Exception e) {
+                    throw new OpenEJBRuntimeException(e);
+                }
+            });
+        } else {
+            ApplicationComposers delegate = extensionContext.getStore(NAMESPACE)
+                    .get(ApplicationComposers.class, ApplicationComposers.class);
 
-        testInstances.forEach(t -> {
-            try {
-                delegate.before(t);
-            } catch (Exception e) {
-                throw new OpenEJBRuntimeException(e);
-            }
-        });
-
+            testInstances.forEach(t -> {
+                try {
+                    delegate.before(t);
+                } catch (Exception e) {
+                    throw new OpenEJBRuntimeException(e);
+                }
+            });
+        }
     }
 
     private Object[] getAdditionalModules(final Class<?> clazz) {
@@ -111,7 +150,6 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
         }
         return null;
     }
-
 
 
 }

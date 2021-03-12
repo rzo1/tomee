@@ -16,7 +16,8 @@
  */
 package org.apache.openejb.junit5.testing;
 
-import org.apache.openejb.junit.RunWithSingleApplicationComposer;
+import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit.jupiter.ExtensionMode;
 import org.apache.openejb.testing.Application;
 import org.apache.openejb.testing.Classes;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWithSingleApplicationComposer
+@RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
 public class SingleAppComposerTest {
 
     @Application // app can have several injections/helpers
