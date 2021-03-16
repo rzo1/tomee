@@ -17,15 +17,18 @@
 package org.apache.tomee.embedded.junit.jupiter;
 
 import org.apache.openejb.OpenEJBRuntimeException;
-import org.apache.openejb.junit.jupiter.ApplicationComposerExtensionBase;
 import org.apache.tomee.embedded.junit.TomEEEmbeddedBase;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstances;
 
 import java.util.List;
-import java.util.Optional;
 
-public class TomEEEmbeddedExtension extends ApplicationComposerExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class TomEEEmbeddedExtension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
     private static final TomEEEmbeddedBase BASE = new TomEEEmbeddedBase();
 
@@ -61,13 +64,10 @@ public class TomEEEmbeddedExtension extends ApplicationComposerExtensionBase imp
     }
 
     private void doInject(final ExtensionContext extensionContext) {
-        Optional<TestInstances> oTestInstances = extensionContext.getTestInstances();
+        TestInstances oTestInstances = extensionContext.getTestInstances()
+                .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
 
-        if (!oTestInstances.isPresent()) {
-            throw new OpenEJBRuntimeException("No test instances available for the given extension context.");
-        }
-
-        List<Object> testInstances = oTestInstances.get().getAllInstances();
+        List<Object> testInstances = oTestInstances.getAllInstances();
 
         testInstances.forEach(t -> {
             try {

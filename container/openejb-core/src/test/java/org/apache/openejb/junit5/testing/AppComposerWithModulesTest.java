@@ -47,12 +47,16 @@ import org.apache.openejb.jee.StatelessBean;
 import org.apache.openejb.jee.jpa.unit.Persistence;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
 import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit.jupiter.ApplicationComposerExtension;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-@RunWithApplicationComposer
 public class AppComposerWithModulesTest {
+
+    @RegisterExtension
+    ApplicationComposerExtension ext = new ApplicationComposerExtension(new Modules());
 
     @EJB
     private PersistManager persistManager;

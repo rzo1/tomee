@@ -31,6 +31,16 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApplicationComposerExtension.class.getName());
     private static final SingleApplicationComposerBase BASE = new SingleApplicationComposerBase();
 
+    private final Object[] modules;
+
+    public ApplicationComposerExtension() {
+        this((Object) null);
+    }
+
+    public ApplicationComposerExtension(Object... modules) {
+        this.modules = modules;
+    }
+
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
 
@@ -57,7 +67,6 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
             doRelease(context);
         }
     }
-
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -93,25 +102,19 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     private void doStart(final ExtensionContext extensionContext) {
 
-        Optional<Class<?>> oClazz = extensionContext.getTestClass();
-
-        if (!oClazz.isPresent()) {
-            throw new OpenEJBRuntimeException("Could not get test class from the given extension context.");
-        }
+        Class<?> oClazz = extensionContext.getTestClass()
+                .orElseThrow(() -> new OpenEJBRuntimeException("Could not get test class from the given extension context."));
 
         extensionContext.getStore(NAMESPACE).put(ApplicationComposers.class,
-                new ApplicationComposers(oClazz.get(), getAdditionalModules(oClazz.get())));
+                new ApplicationComposers(oClazz, this.modules));
 
     }
 
     private void doInject(final ExtensionContext extensionContext) {
-        Optional<TestInstances> oTestInstances = extensionContext.getTestInstances();
+        TestInstances oTestInstances = extensionContext.getTestInstances()
+                .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
 
-        if (!oTestInstances.isPresent()) {
-            throw new OpenEJBRuntimeException("No test instances available for the given extension context.");
-        }
-
-        List<Object> testInstances = oTestInstances.get().getAllInstances();
+        List<Object> testInstances = oTestInstances.getAllInstances();
 
         if (isPerJvm(extensionContext)) {
             testInstances.forEach(t -> {
@@ -134,22 +137,4 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
             });
         }
     }
-
-    private Object[] getAdditionalModules(final Class<?> clazz) {
-        return Arrays.stream(clazz.getClasses())
-                .map(this::newInstance)
-                .filter(Objects::nonNull)
-                .toArray();
-    }
-
-    private Object newInstance(final Class<?> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            //no-op
-        }
-        return null;
-    }
-
-
 }

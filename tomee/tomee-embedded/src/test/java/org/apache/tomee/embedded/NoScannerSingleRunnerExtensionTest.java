@@ -18,6 +18,7 @@ package org.apache.tomee.embedded;
 
 import org.apache.openejb.testing.Application;
 import org.apache.openejb.testing.Classes;
+import org.apache.tomee.embedded.junit.jupiter.RunWithTomEEEmbedded;
 import org.apache.tomee.embedded.junit.jupiter.TomEEEmbeddedExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 // just a manual test to check it works, can't be executed with the rest of the suite,
 // we could use a different surefire execution if we want to add it to the default run
 //-Dtomee.application-composer.application=org.apache.tomee.embedded.NoScannerSingleRunnerExtensionTest$ScanApp
-@ExtendWith(TomEEEmbeddedExtension.class)
+@RunWithTomEEEmbedded
 public class NoScannerSingleRunnerExtensionTest {
     @Application // app can have several injections/helpers
     private ScanApp app;

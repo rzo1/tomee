@@ -25,6 +25,7 @@ import org.apache.openejb.testing.ContainerProperties;
 import org.apache.openejb.testing.RandomPort;
 import org.apache.openejb.testng.PropertiesBuilder;
 import org.apache.tomee.embedded.event.TomEEEmbeddedApplicationRunnerInjection;
+import org.apache.tomee.embedded.junit.jupiter.RunWithTomEEEmbedded;
 import org.apache.tomee.embedded.junit.jupiter.TomEEEmbeddedExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,7 @@ import static org.junit.Assert.*;
 // just a manual test to check it works, can't be executed with the rest of the suite,
 // we could use a different surefire execution if we want to add it to the default run
 //-Dtomee.application-composer.application=org.apache.tomee.embedded.SingleInstanceRunnerExtensionTest$TheApp
-@ExtendWith(TomEEEmbeddedExtension.class)
+@RunWithTomEEEmbedded
 public class SingleInstanceRunnerExtensionTest {
     @Application // app can have several injections/helpers
     private TheApp app;
