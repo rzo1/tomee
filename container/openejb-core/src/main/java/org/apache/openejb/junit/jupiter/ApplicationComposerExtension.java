@@ -61,7 +61,7 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        if (isPerJvm(context) || isPerAll(context)) {
+        if (isPerAll(context)) {
             doRelease(context);
         } else if (isPerDefault(context) && isPerClass(context)) {
             doRelease(context);
@@ -92,12 +92,7 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
     }
 
     private void doRelease(final ExtensionContext extensionContext) throws Exception {
-        if (isPerJvm(extensionContext)) {
-            //FIXME how to release / close after last test class execution?
-            BASE.close();
-        } else {
-            extensionContext.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
-        }
+        extensionContext.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
     }
 
     private void doStart(final ExtensionContext extensionContext) {
