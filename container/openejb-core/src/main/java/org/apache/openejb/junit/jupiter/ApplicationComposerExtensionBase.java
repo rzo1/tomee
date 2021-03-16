@@ -19,6 +19,9 @@ package org.apache.openejb.junit.jupiter;
 import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.util.AnnotationUtils;
+
+import java.util.Optional;
 
 public class ApplicationComposerExtensionBase {
 
@@ -51,9 +54,9 @@ public class ApplicationComposerExtensionBase {
     ExtensionMode getModeFromAnnotation(final ExtensionContext context) {
         if (context.getTestClass().isPresent()) {
 
-            RunWithApplicationComposer a = context.getTestClass().get().getAnnotation(RunWithApplicationComposer.class);
-            if (a != null) {
-                return a.mode();
+            Optional<RunWithApplicationComposer> annotation = AnnotationUtils.findAnnotation(context.getTestClass().get(), RunWithApplicationComposer.class);
+            if (annotation.isPresent()) {
+                return annotation.get().mode();
             }
         }
         return ExtensionMode.AUTO;
