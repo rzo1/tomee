@@ -34,7 +34,7 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
     private final Object[] modules;
 
     public ApplicationComposerExtension() {
-        this((Object) null);
+        this((Object[]) null);
     }
 
     public ApplicationComposerExtension(Object... modules) {
