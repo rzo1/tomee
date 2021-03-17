@@ -19,50 +19,22 @@ package org.apache.openejb.junit5.testing;
 import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.junit.jupiter.ExtensionMode;
 import org.apache.openejb.loader.SystemInstance;
-import org.apache.openejb.testing.Application;
-import org.apache.openejb.testing.Classes;
 import org.junit.jupiter.api.Test;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import org.apache.openejb.testing.Application;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
-public class SingleAppComposerTest {
+public class SingleAppComposerJVMTest {
 
-    @Application // app can have several injections/helpers
-    private ScanApp app;
+    @Application //inject app from other test-case, should be present due to same JVM
+    private SingleAppComposerTest.ScanApp app;
 
     @Test
     public void run() {
         assertNotNull(app);
-        SystemInstance.get().setProperty("key", "Set-Via-SingleAppComposerTest-In-Same-JVM");
-    }
-
-    @Application
-    @Classes(value = ScanMe.class)
-    public static class ScanApp {
-        @Inject
-        private ScanMe ok;
-
-        @Inject
-        private Instance<NotScanned> ko;
-
-        public void check() {
-            assertNotNull(ok);
-            assertTrue(ko.isUnsatisfied());
-        }
-
-    }
-
-    @ApplicationScoped
-    public static class ScanMe {
-    }
-
-    @ApplicationScoped
-    public static class NotScanned {
+        assertEquals("Set-Via-SingleAppComposerTest-In-Same-JVM", SystemInstance.get().getProperty("key"));
     }
 
 }
