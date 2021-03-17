@@ -29,7 +29,7 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWithApplicationComposer
 public class PreDestroyTest {
@@ -42,8 +42,8 @@ public class PreDestroyTest {
 
     @AfterAll
     public static void onAfterClass() {
-        assertTrue("onPostConstruct was not called", isConstructed.get());
-        assertTrue("onPreDestroy was not called", isDestroyed.get());
+        assertTrue(isConstructed.get(), "onPostConstruct was not called");
+        assertTrue(isDestroyed.get(), "onPreDestroy was not called");
     }
 
     @Module

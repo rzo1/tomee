@@ -22,8 +22,8 @@ import org.apache.openejb.loader.SystemInstance;
 import org.junit.jupiter.api.Test;
 import org.apache.openejb.testing.Application;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
 public class SingleAppComposerJVMTest {

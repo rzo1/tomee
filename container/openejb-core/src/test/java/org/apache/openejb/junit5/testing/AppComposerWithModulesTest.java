@@ -16,11 +16,6 @@
  */
 package org.apache.openejb.junit5.testing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -49,8 +44,14 @@ import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
 import org.apache.openejb.junit.jupiter.ApplicationComposerPerEachExtension;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AppComposerWithModulesTest {
 

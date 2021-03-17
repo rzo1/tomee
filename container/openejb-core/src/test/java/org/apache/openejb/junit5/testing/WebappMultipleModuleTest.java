@@ -33,8 +33,8 @@ import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWithApplicationComposer
 @CdiExtensions(WebappMultipleModuleTest.SuperViciousExtension.class)

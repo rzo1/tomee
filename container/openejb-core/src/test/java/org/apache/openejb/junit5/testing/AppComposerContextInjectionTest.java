@@ -32,7 +32,11 @@ import javax.naming.NamingException;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @RunWithApplicationComposer(mode = ExtensionMode.PER_ALL)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
