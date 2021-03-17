@@ -95,6 +95,12 @@
       <version>8.0.7-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.tomee</groupId>
+      <artifactId>openejb-junit5</artifactId>
+      <version>8.0.7-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <!--
   This section allows you to configure where to publish libraries for sharing.
