@@ -61,7 +61,7 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        if (isPerJvm(context) || isPerAll(context)) {
+        if (isPerAll(context)) {
             doRelease(context);
         } else if (isPerDefault(context) && isPerClass(context)) {
             doRelease(context);
