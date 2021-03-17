@@ -14,54 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.junit.jupiter.ExtensionMode;
+import org.apache.openejb.junit5.app.MyApp;
+import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.testing.Application;
-import org.apache.openejb.testing.Classes;
 import org.junit.jupiter.api.Test;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+// just a manual test to check it works, can't be executed with the rest of the suite,
+// we could use a different surefire execution if we want to add it to the default run
+//-Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.order.AppComposerTestClassOrderer -Dtomee.application-composer.application=org.apache.openejb.junit5.app.MyApp
 @RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
 public class SingleAppComposerTest {
 
-    @Application // app can have several injections/helpers
-    private ScanApp app;
+    @Application
+    private MyApp app;
 
     @Test
     public void run() {
         assertNotNull(app);
+        app.check();
+        SystemInstance.get().setProperty("key", "Set-Via-SingleAppComposerTest-In-Same-JVM");
     }
-
-    @Application
-    @Classes(value = ScanMe.class)
-    public static class ScanApp {
-        @Inject
-        private ScanMe ok;
-
-        @Inject
-        private Instance<NotScanned> ko;
-
-        public void check() {
-            assertNotNull(ok);
-            assertTrue(ko.isUnsatisfied());
-        }
-
-    }
-
-    @ApplicationScoped
-    public static class ScanMe {
-    }
-
-    @ApplicationScoped
-    public static class NotScanned {
-    }
-
 }

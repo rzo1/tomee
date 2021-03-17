@@ -3,21 +3,21 @@
 :jbake-type: page
 :jbake-status: published
 
-The `org.apache.openejb.junit.jupiter.ApplicationComposerExtension` is a **JUnit 5 extension**  internally re-using `ApplicationComposers`, which has been used in the JUnit test runner ( `ApplicationComposer`) for testing OpenEJB in recent years. It involves no classpath scanning at all. If you want something to be in the app, you must build it directly in your testcase.
+The `org.apache.openejb.junit5.ApplicationComposerExtension` is a **JUnit 5 extension**  internally re-using `ApplicationComposers`, which has been used in the JUnit test runner ( `ApplicationComposer`) for testing OpenEJB in recent years. It involves no classpath scanning at all. If you want something to be in the app, you must build it directly in your testcase.
 
 With the `RunWithApplicationComposer` you can do identical testing that OpenEJB uses internally, but with limited dependency on OpenEJB itself.
-The main dependency is on the code that is used to build the actual applications:
+The main dependency is:
 
 [source,xml]
 ----
 <dependency>
   <groupId>org.apache.tomee</groupId>
-  <artifactId>openejb-core</artifactId>
+  <artifactId>openejb-junit5</artifactId>
   <version>${openejb.version}</version>
 </dependency>
 ----
 
-Make sure to use a maven surefire version greater or equal to `2.22.0` and add the required dependencies for JUnit 5.
+Make sure to use a maven surefire version greater or equal to `3.0.0-M5` and add the required dependencies for JUnit 5.
 
 == Composing an Application
 
@@ -51,7 +51,7 @@ Used in an actual testcase, that might look like so:
 import org.apache.openejb.jee.EjbJar;
 import org.apache.openejb.jee.StatefulBean;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit5.RunWithApplicationComposer;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWithApplicationComposer //syntactic sugar for @ExtendedWith(ApplicationComposerExtension.class)
+@RunWithApplicationComposer
 public class MoviesTest {
 
     @EJB

@@ -14,24 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.util.AnnotationUtils;
 
 import java.util.Optional;
 
-public class ApplicationComposerExtensionBase {
+public abstract class ApplicationComposerExtensionBase {
 
-    boolean isPerClass(final ExtensionContext context) {
+    boolean isPerClassLifecycle(final ExtensionContext context) {
+        return isPerTestInstanceLifecycle(context, TestInstance.Lifecycle.PER_CLASS);
+    }
+
+    boolean isPerMethodLifecycle(final ExtensionContext context) {
+        return isPerTestInstanceLifecycle(context, TestInstance.Lifecycle.PER_METHOD);
+    }
+
+    boolean isPerTestInstanceLifecycle(final ExtensionContext context, TestInstance.Lifecycle lifecycle) {
         return context.getTestInstanceLifecycle()
-                .map(it -> it.equals(TestInstance.Lifecycle.PER_CLASS))
+                .map(it -> it.equals(lifecycle))
                 .orElse(false);
     }
 
-    boolean isPerEach(final ExtensionContext context) {
+    protected boolean isPerEach(final ExtensionContext context) {
         return checkMode(context, ExtensionMode.PER_EACH);
     }
 

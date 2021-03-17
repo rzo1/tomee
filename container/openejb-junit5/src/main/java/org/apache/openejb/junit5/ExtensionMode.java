@@ -14,34 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.itest.failover.ejb.Calculator;
-import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.testing.Jars;
-import org.apache.openejb.testing.Module;
-import org.junit.jupiter.api.Test;
+public enum ExtensionMode {
 
-import javax.ejb.EJB;
+    /**
+     * When using this mode, a container instance will be created once for the JVM lifetime.
+     */
+    PER_JVM,
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+    /**
+     * When using this mode, a container instance will be created for each test class
+     */
+    PER_ALL,
 
-@RunWithApplicationComposer
-public class AppComposerJarsTest {
-    @Module
-    @Jars("failover-ejb-")
-    public WebApp war() {
-        return new WebApp();
-    }
+    /**
+     * When using this mode, a container instance will be created for each test
+     */
+    PER_EACH,
 
-    @EJB
-    private Calculator calculator;
+    AUTO;
 
-    @Test
-    public void externalBeanFound() {
-        assertNotNull(calculator);
-        assertEquals(3, calculator.sum(1, 2));
-    }
 }

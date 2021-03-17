@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
 import org.apache.openejb.jee.jpa.unit.Persistence;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.testing.CdiExtensions;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
@@ -33,8 +32,8 @@ import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWithApplicationComposer
 @CdiExtensions(WebappMultipleModuleTest.SuperViciousExtension.class)

@@ -14,35 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.jee.EjbJar;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.testing.Module;
-import org.apache.openejb.testing.RandomPort;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.net.URL;
+public class AfterEachReleaser extends AfterReleaserBase {
 
-import static org.junit.Assert.*;
-
-@RunWithApplicationComposer
-public class RandomPortTest {
-    @Module
-    public EjbJar jar() {
-        return new EjbJar();
-    }
-
-    @RandomPort("httpejb")
-    private int port;
-
-    @RandomPort("httpejb")
-    private URL portUrl;
-
-    @Test
-    public void checkRandom() {
-        assertTrue(port > 0);
-        assertNotNull(portUrl);
-        assertEquals(port, portUrl.getPort());
+    AfterEachReleaser(ExtensionContext.Namespace namespace) {
+        super(namespace);
     }
 }
+

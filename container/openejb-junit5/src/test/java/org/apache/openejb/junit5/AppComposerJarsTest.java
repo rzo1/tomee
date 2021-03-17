@@ -14,47 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.jee.EnvEntry;
+import org.apache.openejb.itest.failover.ejb.Calculator;
 import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.testing.Classes;
+import org.apache.openejb.junit5.RunWithApplicationComposer;
+import org.apache.openejb.testing.Jars;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWithApplicationComposer
-public class WebAppEnvEntryTest {
+public class AppComposerJarsTest {
     @Module
-    @Classes(cdi = true, value = {CdiBean.class})
+    @Jars("failover-ejb-")
     public WebApp war() {
-        final WebApp webApp = new WebApp().contextRoot("/myapp");
-        webApp.getEnvEntry().add(new EnvEntry("foo", String.class.getName(), "bar"));
-        return webApp;
+        return new WebApp();
     }
 
-    @Inject
-    private CdiBean bean;
+    @EJB
+    private Calculator calculator;
 
     @Test
-    public void test() {
-        assertEquals("bar", bean.lookup());
-    }
-
-    public static class CdiBean {
-        public String lookup() {
-            try {
-                return String.class.cast(new InitialContext().lookup("java:comp/env/foo"));
-            } catch (final NamingException e) {
-                return "-";
-            }
-        }
+    public void externalBeanFound() {
+        assertNotNull(calculator);
+        assertEquals(3, calculator.sum(1, 2));
     }
 }
-

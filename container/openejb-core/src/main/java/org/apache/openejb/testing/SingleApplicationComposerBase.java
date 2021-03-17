@@ -152,4 +152,8 @@ public class SingleApplicationComposerBase {
             composerInject(superclass);
         }
     }
+
+    public boolean isStarted() {
+        return started;
+    }
 }

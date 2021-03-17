@@ -14,11 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
 import org.apache.openejb.jee.SessionBean;
 import org.apache.openejb.jee.SingletonBean;
-import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit5.RunWithApplicationComposer;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWithApplicationComposer
 public class PreDestroyTest {
@@ -42,8 +42,8 @@ public class PreDestroyTest {
 
     @AfterAll
     public static void onAfterClass() {
-        assertTrue("onPostConstruct was not called", isConstructed.get());
-        assertTrue("onPreDestroy was not called", isDestroyed.get());
+        assertTrue(isConstructed.get(), "onPostConstruct was not called");
+        assertTrue(isDestroyed.get(), "onPreDestroy was not called");
     }
 
     @Module

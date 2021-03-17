@@ -14,12 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+package org.apache.openejb.junit5;
 
 import java.util.Properties;
 
@@ -46,17 +41,22 @@ import org.apache.openejb.jee.Empty;
 import org.apache.openejb.jee.StatelessBean;
 import org.apache.openejb.jee.jpa.unit.Persistence;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.junit.jupiter.ApplicationComposerExtension;
+import org.apache.openejb.junit5.ApplicationComposerPerEachExtension;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AppComposerWithModulesTest {
 
     @RegisterExtension
-    ApplicationComposerExtension ext = new ApplicationComposerExtension(new Modules());
+    ApplicationComposerPerEachExtension ext = new ApplicationComposerPerEachExtension(new Modules());
 
     @EJB
     private PersistManager persistManager;

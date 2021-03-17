@@ -14,25 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
 import org.apache.openejb.jee.EnterpriseBean;
 import org.apache.openejb.jee.SingletonBean;
-import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.rest.ThreadLocalContextManager;
 import org.apache.openejb.testing.AppResource;
 import org.apache.openejb.testing.Module;
 import org.apache.openejb.testing.rest.ContextProvider;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@RunWithApplicationComposer
+@RunWithApplicationComposer(mode = ExtensionMode.PER_ALL)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AppComposerContextInjectionTest {
     @Module
     public EnterpriseBean bean() {

@@ -317,8 +317,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- FIXME TOMEE-2977: Remove override here in case we go for a separate module -->
-        <version>${surefire.junit5.version}</version>
         <configuration>
           <childDelegation>true</childDelegation>
           <reuseForks>false</reuseForks>

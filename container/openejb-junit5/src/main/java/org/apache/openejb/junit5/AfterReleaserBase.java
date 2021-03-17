@@ -14,24 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.openejb.junit5;
 
-package org.apache.openejb.junit;
+import org.apache.openejb.testing.ApplicationComposers;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-import org.apache.openejb.junit.jupiter.ExtensionMode;
-import org.junit.jupiter.api.extension.ExtendWith;
+public abstract class AfterReleaserBase extends ApplicationComposerExtensionBase {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    private final ExtensionContext.Namespace namespace;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(org.apache.openejb.junit.jupiter.ApplicationComposerExtension.class)
-public @interface RunWithApplicationComposer {
+    AfterReleaserBase(ExtensionContext.Namespace namespace) {
+        this.namespace = namespace;
+    }
 
-    /**
-     * The test container lifecycle <em>mode</em> to use.
-     */
-    ExtensionMode mode() default ExtensionMode.AUTO;
+    void run(final ExtensionContext extensionContext) throws Exception {
+        doRelease(extensionContext);
+    }
+
+    void doRelease(final ExtensionContext extensionContext) throws Exception {
+        extensionContext.getStore(namespace).get(ApplicationComposers.class, ApplicationComposers.class).after();
+    }
+
 }
