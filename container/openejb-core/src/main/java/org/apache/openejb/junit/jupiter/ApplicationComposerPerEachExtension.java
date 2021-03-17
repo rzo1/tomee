@@ -16,23 +16,35 @@
  */
 package org.apache.openejb.junit.jupiter;
 
-import org.apache.openejb.testing.ApplicationComposers;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public abstract class AfterReleaserBase extends ApplicationComposerExtensionBase {
+public class ApplicationComposerPerEachExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
-    private final ExtensionContext.Namespace namespace;
-
-    AfterReleaserBase(ExtensionContext.Namespace namespace) {
-        this.namespace = namespace;
+    public ApplicationComposerPerEachExtension() {
+        this((Object[]) null);
     }
 
-    void run(final ExtensionContext extensionContext) throws Exception {
-        doRelease(extensionContext);
+    public ApplicationComposerPerEachExtension(Object... modules) {
+        super(modules);
     }
 
-    void doRelease(final ExtensionContext extensionContext) throws Exception {
-        extensionContext.getStore(namespace).get(ApplicationComposers.class, ApplicationComposers.class).after();
+    @Override
+    void validate(ExtensionContext context) {
+        //no-op
     }
 
+    @Override
+    public void afterAll(ExtensionContext context) throws Exception {
+        addAfterEachReleaser(context);
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) {
+        doInit(context);
+        doStart(context);
+    }
 }

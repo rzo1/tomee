@@ -39,7 +39,7 @@ public abstract class ApplicationComposerExtensionBase {
                 .orElse(false);
     }
 
-    boolean isPerEach(final ExtensionContext context) {
+    protected boolean isPerEach(final ExtensionContext context) {
         return checkMode(context, ExtensionMode.PER_EACH);
     }
 
