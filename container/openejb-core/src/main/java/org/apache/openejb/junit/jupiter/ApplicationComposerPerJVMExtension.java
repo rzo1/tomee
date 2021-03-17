@@ -71,6 +71,10 @@ public class ApplicationComposerPerJVMExtension extends ApplicationComposerPerXY
         });
     }
 
+    public static boolean isStarted() {
+        return BASE.isStarted();
+    }
+
 
 }
 

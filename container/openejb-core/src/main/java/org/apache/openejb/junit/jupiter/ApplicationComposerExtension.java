@@ -39,6 +39,12 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
+
+        if (!isPerJvm(context) && ApplicationComposerPerJVMExtension.isStarted()) {
+            //XXX: Future work: We might get it to work via a JVM singleton/lock, see https://github.com/apache/tomee/pull/767#discussion_r595343572
+            throw new OpenEJBRuntimeException("Cannot run PER_JVM in combination with PER_ALL, PER_EACH or AUTO");
+        }
+
         if (isPerJvm(context)) {
             context.getStore(NAMESPACE).put(ApplicationComposerPerXYExtensionBase.class, new ApplicationComposerPerJVMExtension());
         } else if (isPerAll(context)) {
