@@ -19,12 +19,14 @@ package org.apache.openejb.junit.jupiter;
 import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;
 import org.apache.openejb.testing.SingleApplicationComposerBase;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.AfterAllCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstances;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class ApplicationComposerExtension extends ApplicationComposerExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
@@ -43,26 +45,42 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
+
+        validate(context);
+
         if (isPerJvm(context)) {
             BASE.start(context.getTestClass().orElse(null));
-            if (isPerClass(context)) {
+            if (isPerClassLifecycle(context)) {
                 doInject(context);
             }
         } else if (isPerAll(context)) {
+            doInit(context);
             doStart(context);
             addAfterAllReleaser(context);
         } else if (isPerEach(context)) {
             addAfterEachReleaser(context);
         } else if (isPerDefault(context)) {
-            if (isPerClass(context)) {
+            if (isPerClassLifecycle(context)) {
+                doInit(context);
                 doStart(context);
-                doInject(context);
                 addAfterAllReleaser(context);
             } else {
                 addAfterEachReleaser(context);
             }
         } else {
-            throw new OpenEJBRuntimeException("No ExtensionMode is selected.");
+            throw new OpenEJBRuntimeException("No ExtensionMode is present.");
+        }
+    }
+
+    private void validate(ExtensionContext context) {
+        if (!isPerJvm(context) && BASE.isStarted()) {
+            //XXX: Future work: We might get it to work via a JVM singleton/lock, see https://github.com/apache/tomee/pull/767#discussion_r595343572
+            throw new OpenEJBRuntimeException("Cannot run PER_JVM in combination with PER_ALL, PER_EACH or AUTO");
+        }
+
+        if (isPerAll(context) && isPerMethodLifecycle(context)) {
+            //XXX: Make it work some how...
+            throw new OpenEJBRuntimeException("Cannot run PER_ALL in combination with TestInstance.Lifecycle.PER_METHOD.");
         }
     }
 
@@ -76,15 +94,10 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        if (isPerJvm(context)) {
-            if (!isPerClass(context)) {
+        if (isPerMethodLifecycle(context)) {
+            if (isPerJvm(context)) {
                 doInject(context);
-            }
-        } else if (isPerEach(context)) {
-            doInit(context);
-            doStart(context);
-        } else if (isPerDefault(context)) {
-            if (!isPerClass(context)) {
+            } else if (isPerEach(context) || isPerDefault(context)) {
                 doInit(context);
                 doStart(context);
             }
@@ -100,7 +113,6 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
     }
 
     private void doInit(final ExtensionContext extensionContext) {
-
         Class<?> oClazz = extensionContext.getTestClass()
                 .orElseThrow(() -> new OpenEJBRuntimeException("Could not get test class from the given extension context."));
 

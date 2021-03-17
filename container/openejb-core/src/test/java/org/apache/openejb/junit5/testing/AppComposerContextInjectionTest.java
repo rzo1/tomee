@@ -19,11 +19,13 @@ package org.apache.openejb.junit5.testing;
 import org.apache.openejb.jee.EnterpriseBean;
 import org.apache.openejb.jee.SingletonBean;
 import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit.jupiter.ExtensionMode;
 import org.apache.openejb.rest.ThreadLocalContextManager;
 import org.apache.openejb.testing.AppResource;
 import org.apache.openejb.testing.Module;
 import org.apache.openejb.testing.rest.ContextProvider;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -32,7 +34,8 @@ import java.security.Principal;
 
 import static org.junit.Assert.*;
 
-@RunWithApplicationComposer
+@RunWithApplicationComposer(mode = ExtensionMode.PER_ALL)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AppComposerContextInjectionTest {
     @Module
     public EnterpriseBean bean() {

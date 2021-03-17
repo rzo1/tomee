@@ -25,9 +25,17 @@ import java.util.Optional;
 
 public abstract class ApplicationComposerExtensionBase {
 
-    boolean isPerClass(final ExtensionContext context) {
+    boolean isPerClassLifecycle(final ExtensionContext context) {
+        return isPerTestInstanceLifecycle(context, TestInstance.Lifecycle.PER_CLASS);
+    }
+
+    boolean isPerMethodLifecycle(final ExtensionContext context) {
+        return isPerTestInstanceLifecycle(context, TestInstance.Lifecycle.PER_METHOD);
+    }
+
+    boolean isPerTestInstanceLifecycle(final ExtensionContext context, TestInstance.Lifecycle lifecycle) {
         return context.getTestInstanceLifecycle()
-                .map(it -> it.equals(TestInstance.Lifecycle.PER_CLASS))
+                .map(it -> it.equals(lifecycle))
                 .orElse(false);
     }
 
