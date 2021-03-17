@@ -60,7 +60,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <tomee.build.name>${project.groupId}.container.junit5</tomee.build.name>
+        <tomee.build.name>${project.groupId}.container.junit5.backward</tomee.build.name>
         <netbeans.hint.license>openejb</netbeans.hint.license>
     </properties>
 

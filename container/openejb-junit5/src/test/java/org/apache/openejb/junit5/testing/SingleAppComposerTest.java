@@ -43,27 +43,9 @@ public class SingleAppComposerTest {
     }
 
     @Application
-    @Classes(value = ScanMe.class)
+    @Classes
     public static class ScanApp {
-        @Inject
-        private ScanMe ok;
 
-        @Inject
-        private Instance<NotScanned> ko;
-
-        public void check() {
-            assertNotNull(ok);
-            assertTrue(ko.isUnsatisfied());
-        }
-
-    }
-
-    @ApplicationScoped
-    public static class ScanMe {
-    }
-
-    @ApplicationScoped
-    public static class NotScanned {
     }
 
 }
