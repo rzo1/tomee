@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
 import org.apache.openejb.jee.EnterpriseBean;
 import org.apache.openejb.jee.SingletonBean;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.junit.jupiter.ExtensionMode;
 import org.apache.openejb.rest.ThreadLocalContextManager;
 import org.apache.openejb.testing.AppResource;
 import org.apache.openejb.testing.Module;

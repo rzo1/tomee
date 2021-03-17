@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.junit.jupiter.ExtensionMode;
-import org.apache.openejb.junit5.testing.app.MyApp;
+import org.apache.openejb.junit5.app.MyApp;
 import org.apache.openejb.loader.SystemInstance;
 import org.apache.openejb.testing.Application;
 import org.junit.jupiter.api.Test;
@@ -27,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // just a manual test to check it works, can't be executed with the rest of the suite,
 // we could use a different surefire execution if we want to add it to the default run
-//-Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.testing.order.AppComposerTestClassOrderer -Dtomee.application-composer.application=org.apache.openejb.junit5.testing.app.MyApp
+//-Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.order.AppComposerTestClassOrderer -Dtomee.application-composer.application=org.apache.openejb.junit5.app.MyApp
 @RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
 public class SingleAppComposerTest {
 
-    @Application // app can have several injections/helpers
+    @Application
     private MyApp app;
 
     @Test

@@ -62,8 +62,8 @@
                         <openejb.home>${project.basedir}/target/test-classes</openejb.home>
                     </systemPropertyVariables>
                     <excludes>
-                        <exclude>org/apache/openejb/junit5/testing/SingleAppComposerTest</exclude>
-                        <exclude>org/apache/openejb/junit5/testing/SingleAppComposerJVMTest</exclude>
+                        <exclude>org/apache/openejb/junit5/SingleAppComposerTest</exclude>
+                        <exclude>org/apache/openejb/junit5/SingleAppComposerJVMTest</exclude>
                     </excludes>
                 </configuration>
             </plugin>

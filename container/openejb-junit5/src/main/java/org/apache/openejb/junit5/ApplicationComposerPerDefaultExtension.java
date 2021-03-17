@@ -14,38 +14,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.OpenEJBRuntimeException;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class ApplicationComposerPerAllExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class ApplicationComposerPerDefaultExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
-    public ApplicationComposerPerAllExtension() {
+    public ApplicationComposerPerDefaultExtension() {
         this((Object[]) null);
     }
 
-    public ApplicationComposerPerAllExtension(Object... modules) {
+    public ApplicationComposerPerDefaultExtension(Object... modules) {
         super(modules);
     }
 
     @Override
     void validate(ExtensionContext context) {
-        if (isPerAll(context) && isPerMethodLifecycle(context)) {
-            //XXX: Might be possible to make this work - for now, we are going to throw something...
-            throw new OpenEJBRuntimeException("Cannot run PER_ALL in combination with TestInstance.Lifecycle.PER_METHOD.");
-        }
+        //no-op
     }
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         super.beforeAll(context);
-        doInit(context);
-        doStart(context);
-        addAfterAllReleaser(context);
+        if (isPerClassLifecycle(context)) {
+            doInit(context);
+            doStart(context);
+            addAfterAllReleaser(context);
+        } else {
+            addAfterEachReleaser(context);
+        }
+    }
+
+    @Override
+    public void beforeEach(ExtensionContext context) throws Exception {
+        if (isPerMethodLifecycle(context)) {
+            doInit(context);
+            doStart(context);
+        }
     }
 }

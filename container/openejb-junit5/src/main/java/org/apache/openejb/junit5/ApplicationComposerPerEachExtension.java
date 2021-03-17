@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -22,13 +22,13 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class ApplicationComposerPerDefaultExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class ApplicationComposerPerEachExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
-    public ApplicationComposerPerDefaultExtension() {
+    public ApplicationComposerPerEachExtension() {
         this((Object[]) null);
     }
 
-    public ApplicationComposerPerDefaultExtension(Object... modules) {
+    public ApplicationComposerPerEachExtension(Object... modules) {
         super(modules);
     }
 
@@ -38,22 +38,13 @@ public class ApplicationComposerPerDefaultExtension extends ApplicationComposerP
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
-        super.beforeAll(context);
-        if (isPerClassLifecycle(context)) {
-            doInit(context);
-            doStart(context);
-            addAfterAllReleaser(context);
-        } else {
-            addAfterEachReleaser(context);
-        }
+    public void afterAll(ExtensionContext context) throws Exception {
+        addAfterEachReleaser(context);
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-        if (isPerMethodLifecycle(context)) {
-            doInit(context);
-            doStart(context);
-        }
+    public void beforeEach(ExtensionContext context) {
+        doInit(context);
+        doStart(context);
     }
 }

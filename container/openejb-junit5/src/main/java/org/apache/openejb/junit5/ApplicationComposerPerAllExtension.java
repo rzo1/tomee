@@ -14,37 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
+import org.apache.openejb.OpenEJBRuntimeException;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class ApplicationComposerPerEachExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+public class ApplicationComposerPerAllExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
 
-    public ApplicationComposerPerEachExtension() {
+    public ApplicationComposerPerAllExtension() {
         this((Object[]) null);
     }
 
-    public ApplicationComposerPerEachExtension(Object... modules) {
+    public ApplicationComposerPerAllExtension(Object... modules) {
         super(modules);
     }
 
     @Override
     void validate(ExtensionContext context) {
-        //no-op
+        if (isPerAll(context) && isPerMethodLifecycle(context)) {
+            //XXX: Might be possible to make this work - for now, we are going to throw something...
+            throw new OpenEJBRuntimeException("Cannot run PER_ALL in combination with TestInstance.Lifecycle.PER_METHOD.");
+        }
     }
 
     @Override
-    public void afterAll(ExtensionContext context) throws Exception {
-        addAfterEachReleaser(context);
-    }
-
-    @Override
-    public void beforeEach(ExtensionContext context) {
+    public void beforeAll(ExtensionContext context) throws Exception {
+        super.beforeAll(context);
         doInit(context);
         doStart(context);
+        addAfterAllReleaser(context);
     }
 }

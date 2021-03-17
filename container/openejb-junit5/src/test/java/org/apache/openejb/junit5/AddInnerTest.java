@@ -14,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.openejb.junit5;
 
-package org.apache.openejb.junit;
+import org.apache.openejb.jee.WebApp;
+import org.apache.openejb.testing.Classes;
+import org.apache.openejb.testing.Module;
+import org.junit.jupiter.api.Test;
 
-import org.apache.openejb.junit.jupiter.ExtensionMode;
-import org.junit.jupiter.api.extension.ExtendWith;
+import javax.inject.Inject;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(org.apache.openejb.junit.jupiter.ApplicationComposerExtension.class)
-public @interface RunWithApplicationComposer {
+@RunWithApplicationComposer
+public class AddInnerTest {
+    @Module
+    @Classes(innerClassesAsBean = true, cdi = true)
+    public WebApp web() {
+        return new WebApp();
+    }
 
-    /**
-     * The test container lifecycle <em>mode</em> to use.
-     */
-    ExtensionMode mode() default ExtensionMode.AUTO;
+    @Inject
+    private Injectable notNull;
+
+    @Test
+    public void run() {
+        assertNotNull(notNull);
+    }
+
+    public static class Injectable {}
 }

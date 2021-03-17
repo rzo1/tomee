@@ -14,25 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.testing.ApplicationComposers;
-import org.junit.jupiter.api.extension.ExtensionContext;
+public enum ExtensionMode {
 
-public abstract class AfterReleaserBase extends ApplicationComposerExtensionBase {
+    /**
+     * When using this mode, a container instance will be created once for the JVM lifetime.
+     */
+    PER_JVM,
 
-    private final ExtensionContext.Namespace namespace;
+    /**
+     * When using this mode, a container instance will be created for each test class
+     */
+    PER_ALL,
 
-    AfterReleaserBase(ExtensionContext.Namespace namespace) {
-        this.namespace = namespace;
-    }
+    /**
+     * When using this mode, a container instance will be created for each test
+     */
+    PER_EACH,
 
-    void run(final ExtensionContext extensionContext) throws Exception {
-        doRelease(extensionContext);
-    }
-
-    void doRelease(final ExtensionContext extensionContext) throws Exception {
-        extensionContext.getStore(namespace).get(ApplicationComposers.class, ApplicationComposers.class).after();
-    }
+    AUTO;
 
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
 import java.util.Properties;
 
@@ -41,7 +41,7 @@ import org.apache.openejb.jee.Empty;
 import org.apache.openejb.jee.StatelessBean;
 import org.apache.openejb.jee.jpa.unit.Persistence;
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
-import org.apache.openejb.junit.jupiter.ApplicationComposerPerEachExtension;
+import org.apache.openejb.junit5.ApplicationComposerPerEachExtension;
 import org.apache.openejb.testing.Configuration;
 import org.apache.openejb.testing.Module;
 

@@ -14,33 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
+import org.apache.openejb.jee.EnvEntry;
 import org.apache.openejb.jee.WebApp;
-import org.apache.openejb.junit.RunWithApplicationComposer;
+import org.apache.openejb.junit5.RunWithApplicationComposer;
 import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWithApplicationComposer
-public class AddInnerTest {
+public class WebAppEnvEntryTest {
     @Module
-    @Classes(innerClassesAsBean = true, cdi = true)
-    public WebApp web() {
-        return new WebApp();
+    @Classes(cdi = true, value = {CdiBean.class})
+    public WebApp war() {
+        final WebApp webApp = new WebApp().contextRoot("/myapp");
+        webApp.getEnvEntry().add(new EnvEntry("foo", String.class.getName(), "bar"));
+        return webApp;
     }
 
     @Inject
-    private Injectable notNull;
+    private CdiBean bean;
 
     @Test
-    public void run() {
-        assertNotNull(notNull);
+    public void test() {
+        assertEquals("bar", bean.lookup());
     }
 
-    public static class Injectable {}
+    public static class CdiBean {
+        public String lookup() {
+            try {
+                return String.class.cast(new InitialContext().lookup("java:comp/env/foo"));
+            } catch (final NamingException e) {
+                return "-";
+            }
+        }
+    }
 }
+

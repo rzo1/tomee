@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing.order;
+package org.apache.openejb.junit5.order;
 
-import org.apache.openejb.junit5.testing.SingleAppComposerJVMTest;
-import org.apache.openejb.junit5.testing.SingleAppComposerTest;
+import org.apache.openejb.junit5.SingleAppComposerJVMTest;
+import org.apache.openejb.junit5.SingleAppComposerTest;
 import org.junit.jupiter.api.ClassDescriptor;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.ClassOrdererContext;

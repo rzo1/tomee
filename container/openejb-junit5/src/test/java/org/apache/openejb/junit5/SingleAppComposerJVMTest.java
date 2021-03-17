@@ -14,37 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit5.testing;
+package org.apache.openejb.junit5;
 
-import org.apache.openejb.jee.EjbJar;
-import org.apache.openejb.junit.RunWithApplicationComposer;
-import org.apache.openejb.testing.Module;
-import org.apache.openejb.testing.RandomPort;
+import org.apache.openejb.junit5.app.MyApp;
+import org.apache.openejb.loader.SystemInstance;
 import org.junit.jupiter.api.Test;
-
-import java.net.URL;
+import org.apache.openejb.testing.Application;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWithApplicationComposer
-public class RandomPortTest {
-    @Module
-    public EjbJar jar() {
-        return new EjbJar();
-    }
+// just a manual test to check it works, can't be executed with the rest of the suite,
+// we could use a different surefire execution if we want to add it to the default run
+//-Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.order.AppComposerTestClassOrderer -Dtomee.application-composer.application=org.apache.openejb.junit5.app.MyApp
+@RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
+public class SingleAppComposerJVMTest {
 
-    @RandomPort("httpejb")
-    private int port;
-
-    @RandomPort("httpejb")
-    private URL portUrl;
+    @Application
+    private MyApp app;
 
     @Test
-    public void checkRandom() {
-        assertTrue(port > 0);
-        assertNotNull(portUrl);
-        assertEquals(port, portUrl.getPort());
+    public void run() {
+        assertNotNull(app);
+        app.check();
+        assertEquals("Set-Via-SingleAppComposerTest-In-Same-JVM", SystemInstance.get().getProperty("key"));
     }
+
 }

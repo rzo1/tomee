@@ -14,14 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
+package org.apache.openejb.junit5;
 
-public class AfterEachReleaser extends AfterReleaserBase {
+import org.junit.jupiter.api.extension.ExtendWith;
 
-    AfterEachReleaser(ExtensionContext.Namespace namespace) {
-        super(namespace);
-    }
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(ApplicationComposerExtension.class)
+public @interface RunWithApplicationComposer {
+
+    /**
+     * The test container lifecycle <em>mode</em> to use.
+     */
+    ExtensionMode mode() default ExtensionMode.AUTO;
 }
-

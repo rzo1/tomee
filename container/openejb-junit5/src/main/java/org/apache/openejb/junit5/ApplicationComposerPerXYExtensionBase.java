@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5;
 
 import org.apache.openejb.OpenEJBRuntimeException;
 import org.apache.openejb.testing.ApplicationComposers;

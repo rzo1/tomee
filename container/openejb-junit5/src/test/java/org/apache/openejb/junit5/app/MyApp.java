@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,14 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.openejb.junit.jupiter;
+package org.apache.openejb.junit5.app;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.apache.openejb.testing.Application;
+import org.apache.openejb.testing.Classes;
 
-public class AfterAllReleaser extends AfterReleaserBase {
+import javax.inject.Inject;
 
-    AfterAllReleaser(ExtensionContext.Namespace namespace) {
-        super(namespace);
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@Application
+@Classes(cdi = true, innerClassesAsBean = true)
+public class MyApp {
+
+    @Inject
+    private MyBean ok;
+
+    public void check() {
+        assertNotNull(ok);
+    }
+
+    public static class MyBean {
     }
 
 }
