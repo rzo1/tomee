@@ -16,7 +16,6 @@
  */
 package org.apache.openejb.junit5.testing.order;
 
-import org.apache.openejb.junit.RunWithApplicationComposer;
 import org.apache.openejb.junit5.testing.SingleAppComposerJVMTest;
 import org.apache.openejb.junit5.testing.SingleAppComposerTest;
 import org.junit.jupiter.api.ClassDescriptor;
@@ -33,26 +32,17 @@ public class AppComposerTestClassOrderer implements ClassOrderer {
     }
 
     /*
-     * The order, we want here is
-     *
-     * 1. Everything, which is not @RunWithApplicationComposer
-     * 2. Everything, which is @RunWithApplicationComposer
-     * 3. SingleAppComposerTest before SingleAppComposerJVMTest (to test same JVM)
+     * SingleAppComposerTest before SingleAppComposerJVMTest (same JVM test)
      */
     private static int getOrder(ClassDescriptor classDescriptor) {
-        if (classDescriptor.findAnnotation(RunWithApplicationComposer.class).isPresent()) {
-
-            if(classDescriptor.getTestClass().equals(SingleAppComposerTest.class)) {
-                return 3;
-            }
-
-            if(classDescriptor.getTestClass().equals(SingleAppComposerJVMTest.class)) {
-                return 4;
-            }
-
+        if (classDescriptor.getTestClass().equals(SingleAppComposerTest.class)) {
             return 2;
-        } else {
-            return 1;
         }
+
+        if (classDescriptor.getTestClass().equals(SingleAppComposerJVMTest.class)) {
+            return 3;
+        }
+
+        return 1;
     }
 }
