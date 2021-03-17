@@ -43,59 +43,63 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-
         if (isPerJvm(context)) {
             BASE.start(context.getTestClass().orElse(null));
+            if (isPerClass(context)) {
+                doInject(context);
+            }
         } else if (isPerAll(context)) {
             doStart(context);
+            addAfterAllReleaser(context);
+        } else if (isPerEach(context)) {
+            addAfterEachReleaser(context);
         } else if (isPerDefault(context)) {
             if (isPerClass(context)) {
                 doStart(context);
+                doInject(context);
+                addAfterAllReleaser(context);
+            } else {
+                addAfterEachReleaser(context);
             }
-        }
-
-        if (isPerClass(context)) {
-            doInject(context);
+        } else {
+            throw new OpenEJBRuntimeException("No ExtensionMode is selected.");
         }
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        if (isPerAll(context)) {
-            doRelease(context);
-        } else if (isPerDefault(context) && isPerClass(context)) {
-            doRelease(context);
+        AfterAllReleaser releaser = context.getStore(NAMESPACE).get(AfterAllReleaser.class, AfterAllReleaser.class);
+        if (releaser != null) {
+            releaser.run(context);
         }
     }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-
-        if (isPerEach(context)) {
+        if (isPerJvm(context)) {
+            if (!isPerClass(context)) {
+                doInject(context);
+            }
+        } else if (isPerEach(context)) {
+            doInit(context);
             doStart(context);
-        } else if (isPerDefault(context) && !isPerClass(context)) {
-            doStart(context);
-        }
-
-        if (!isPerClass(context)) {
-            doInject(context);
+        } else if (isPerDefault(context)) {
+            if (!isPerClass(context)) {
+                doInit(context);
+                doStart(context);
+            }
         }
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        if (isPerEach(context)) {
-            doRelease(context);
-        } else if (isPerDefault(context) && !isPerClass(context)) {
-            doRelease(context);
+        AfterEachReleaser releaser = context.getStore(NAMESPACE).get(AfterEachReleaser.class, AfterEachReleaser.class);
+        if (releaser != null) {
+            releaser.run(context);
         }
     }
 
-    private void doRelease(final ExtensionContext extensionContext) throws Exception {
-        extensionContext.getStore(NAMESPACE).get(ApplicationComposers.class, ApplicationComposers.class).after();
-    }
-
-    private void doStart(final ExtensionContext extensionContext) {
+    private void doInit(final ExtensionContext extensionContext) {
 
         Class<?> oClazz = extensionContext.getTestClass()
                 .orElseThrow(() -> new OpenEJBRuntimeException("Could not get test class from the given extension context."));
@@ -105,31 +109,44 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
 
     }
 
+    private void doStart(final ExtensionContext extensionContext) {
+        TestInstances oTestInstances = extensionContext.getTestInstances()
+                .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
+
+        List<Object> testInstances = oTestInstances.getAllInstances();
+
+        ApplicationComposers delegate = extensionContext.getStore(NAMESPACE)
+                .get(ApplicationComposers.class, ApplicationComposers.class);
+
+        testInstances.forEach(t -> {
+            try {
+                delegate.before(t);
+            } catch (Exception e) {
+                throw new OpenEJBRuntimeException(e);
+            }
+        });
+    }
+
     private void doInject(final ExtensionContext extensionContext) {
         TestInstances oTestInstances = extensionContext.getTestInstances()
                 .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
 
         List<Object> testInstances = oTestInstances.getAllInstances();
 
-        if (isPerJvm(extensionContext)) {
-            testInstances.forEach(t -> {
-                try {
-                    BASE.composerInject(t);
-                } catch (Exception e) {
-                    throw new OpenEJBRuntimeException(e);
-                }
-            });
-        } else {
-            ApplicationComposers delegate = extensionContext.getStore(NAMESPACE)
-                    .get(ApplicationComposers.class, ApplicationComposers.class);
+        testInstances.forEach(t -> {
+            try {
+                BASE.composerInject(t);
+            } catch (Exception e) {
+                throw new OpenEJBRuntimeException(e);
+            }
+        });
+    }
 
-            testInstances.forEach(t -> {
-                try {
-                    delegate.before(t);
-                } catch (Exception e) {
-                    throw new OpenEJBRuntimeException(e);
-                }
-            });
-        }
+    private void addAfterAllReleaser(ExtensionContext context) {
+        context.getStore(NAMESPACE).put(AfterAllReleaser.class, new AfterAllReleaser(NAMESPACE));
+    }
+
+    private void addAfterEachReleaser(ExtensionContext context) {
+        context.getStore(NAMESPACE).put(AfterEachReleaser.class, new AfterEachReleaser(NAMESPACE));
     }
 }

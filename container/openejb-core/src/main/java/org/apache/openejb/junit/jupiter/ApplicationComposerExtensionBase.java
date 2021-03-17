@@ -23,7 +23,7 @@ import org.junit.platform.commons.util.AnnotationUtils;
 
 import java.util.Optional;
 
-public class ApplicationComposerExtensionBase {
+public abstract class ApplicationComposerExtensionBase {
 
     boolean isPerClass(final ExtensionContext context) {
         return context.getTestInstanceLifecycle()
