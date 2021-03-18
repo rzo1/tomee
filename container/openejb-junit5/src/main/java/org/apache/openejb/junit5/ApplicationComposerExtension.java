@@ -41,7 +41,7 @@ public class ApplicationComposerExtension extends ApplicationComposerExtensionBa
     public void beforeAll(ExtensionContext context) throws Exception {
 
         if (isPerJvm(context)) {
-            if(this.modules.length > 0) {
+            if(this.modules != null && this.modules.length > 0) {
                 throw new IllegalArgumentException("Modules are not supported in PER_JVM mode. Set 'tomee.application-composer.application' system property.");
             }
             context.getStore(NAMESPACE).put(ApplicationComposerPerXYExtensionBase.class, new ApplicationComposerPerJVMExtension());

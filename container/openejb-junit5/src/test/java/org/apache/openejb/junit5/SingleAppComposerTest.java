@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-// just a manual test to check it works, can't be executed with the rest of the suite,
-// we could use a different surefire execution if we want to add it to the default run
 //-Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.order.AppComposerTestClassOrderer -Dtomee.application-composer.application=org.apache.openejb.junit5.app.MyApp
 @RunWithApplicationComposer(mode = ExtensionMode.PER_JVM)
 public class SingleAppComposerTest {

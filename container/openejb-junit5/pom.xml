@@ -77,11 +77,42 @@
                     <systemPropertyVariables>
                         <openejb.home>${project.basedir}/target/test-classes</openejb.home>
                     </systemPropertyVariables>
-                    <excludes>
-                        <exclude>org/apache/openejb/junit5/SingleAppComposerTest</exclude>
-                        <exclude>org/apache/openejb/junit5/SingleAppComposerJVMTest</exclude>
-                    </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/apache/openejb/junit5/SingleAppComposerTest</exclude>
+                                <exclude>org/apache/openejb/junit5/SingleAppComposerJVMTest</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>per-jvm-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkCount>0</forkCount>
+                            <includes>
+                                <include>org/apache/openejb/junit5/SingleAppComposerTest</include>
+                                <include>org/apache/openejb/junit5/SingleAppComposerJVMTest</include>
+                            </includes>
+                            <argLine>
+                                ${jacocoArgLine}
+                                -enableassertions
+                                -Djunit.jupiter.testclass.order.default=org.apache.openejb.junit5.order.AppComposerTestClassOrderer
+                                -Dtomee.application-composer.application=org.apache.openejb.junit5.app.MyApp
+                            </argLine>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
