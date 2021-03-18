@@ -33,12 +33,7 @@ public class ApplicationComposerPerEachExtension extends ApplicationComposerPerX
     }
 
     @Override
-    void validate(ExtensionContext context) {
-        //no-op
-    }
-
-    @Override
-    public void afterAll(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         addAfterEachReleaser(context);
     }
 

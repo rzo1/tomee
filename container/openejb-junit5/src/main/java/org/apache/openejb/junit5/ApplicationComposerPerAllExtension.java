@@ -16,7 +16,8 @@
  */
 package org.apache.openejb.junit5;
 
-import org.apache.openejb.OpenEJBRuntimeException;
+import org.apache.openejb.util.LogCategory;
+import org.apache.openejb.util.Logger;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class ApplicationComposerPerAllExtension extends ApplicationComposerPerXYExtensionBase implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback {
+
+    private static final Logger logger = Logger.getInstance(LogCategory.OPENEJB, ApplicationComposerPerAllExtension.class);
 
     public ApplicationComposerPerAllExtension() {
         this((Object[]) null);
@@ -34,10 +37,14 @@ public class ApplicationComposerPerAllExtension extends ApplicationComposerPerXY
     }
 
     @Override
-    void validate(ExtensionContext context) {
+    protected void validate(ExtensionContext context) {
+        super.validate(context);
         if (isPerAll(context) && isPerMethodLifecycle(context)) {
-            //XXX: Might be possible to make this work - for now, we are going to throw something...
-            throw new OpenEJBRuntimeException("Cannot run PER_ALL in combination with TestInstance.Lifecycle.PER_METHOD.");
+            logger.info("Running PER_ALL in combination with TestInstance.Lifecycle.PER_METHOD.");
+            logger.info("Please note, there are some limitations (N = amount of test methods):");
+            logger.info("N = 1: Will work as expected.");
+            logger.info("N > 1: Injections are lost after the first test method was executed.");
+            logger.info("N > 1: Use CDI.current(), InitialContext or pure (http) client to implement the test.");
         }
     }
 

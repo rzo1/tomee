@@ -41,7 +41,12 @@ abstract class ApplicationComposerPerXYExtensionBase extends ApplicationComposer
         this.modules = modules;
     }
 
-    abstract void validate(ExtensionContext context);
+    protected void validate(ExtensionContext context) {
+        if (!isPerJvm(context) && ApplicationComposerPerJVMExtension.isStarted()) {
+            //XXX: Future work: We might get it to work via a JVM singleton/lock, see https://github.com/apache/tomee/pull/767#discussion_r595343572
+            throw new OpenEJBRuntimeException("Cannot run PER_JVM in combination with PER_ALL, PER_EACH or AUTO");
+        }
+    }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {

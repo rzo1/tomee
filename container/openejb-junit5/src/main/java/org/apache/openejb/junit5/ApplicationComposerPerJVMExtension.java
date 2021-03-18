@@ -32,7 +32,7 @@ public class ApplicationComposerPerJVMExtension extends ApplicationComposerPerXY
     private static final SingleApplicationComposerBase BASE = new SingleApplicationComposerBase();
 
     @Override
-    void validate(ExtensionContext context) {
+    protected void validate(ExtensionContext context) {
         if (!isPerJvm(context) && BASE.isStarted()) {
             //XXX: Future work: We might get it to work via a JVM singleton/lock, see https://github.com/apache/tomee/pull/767#discussion_r595343572
             throw new OpenEJBRuntimeException("Cannot run PER_JVM in combination with PER_ALL, PER_EACH or AUTO");
@@ -50,7 +50,7 @@ public class ApplicationComposerPerJVMExtension extends ApplicationComposerPerXY
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         if (isPerMethodLifecycle(context)) {
             doInject(context);
         }

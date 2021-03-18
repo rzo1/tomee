@@ -33,11 +33,6 @@ public class ApplicationComposerPerDefaultExtension extends ApplicationComposerP
     }
 
     @Override
-    void validate(ExtensionContext context) {
-        //no-op
-    }
-
-    @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         super.beforeAll(context);
         if (isPerClassLifecycle(context)) {

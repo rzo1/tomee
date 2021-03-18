@@ -59,14 +59,9 @@ public abstract class ApplicationComposerExtensionBase {
     }
 
     ExtensionMode getModeFromAnnotation(final ExtensionContext context) {
-        if (context.getTestClass().isPresent()) {
-
-            Optional<RunWithApplicationComposer> annotation = AnnotationUtils.findAnnotation(context.getTestClass().get(), RunWithApplicationComposer.class);
-            if (annotation.isPresent()) {
-                return annotation.get().mode();
-            }
-        }
-        return ExtensionMode.AUTO;
-
+        return context.getTestClass()
+                .flatMap(test -> AnnotationUtils.findAnnotation(test, RunWithApplicationComposer.class))
+                .map(RunWithApplicationComposer::mode)
+                .orElse(ExtensionMode.AUTO);
     }
 }

@@ -28,11 +28,6 @@ public abstract class AfterReleaserBase extends ApplicationComposerExtensionBase
     }
 
     void run(final ExtensionContext extensionContext) throws Exception {
-        doRelease(extensionContext);
-    }
-
-    void doRelease(final ExtensionContext extensionContext) throws Exception {
         extensionContext.getStore(namespace).get(ApplicationComposers.class, ApplicationComposers.class).after();
     }
-
 }
