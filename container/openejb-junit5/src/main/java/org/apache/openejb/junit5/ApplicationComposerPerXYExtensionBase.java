@@ -83,7 +83,7 @@ abstract class ApplicationComposerPerXYExtensionBase extends ApplicationComposer
 
     }
 
-    void doStart(final ExtensionContext extensionContext) {
+    void doStart(final ExtensionContext extensionContext) throws Exception {
         TestInstances oTestInstances = extensionContext.getTestInstances()
                 .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
 
@@ -101,6 +101,27 @@ abstract class ApplicationComposerPerXYExtensionBase extends ApplicationComposer
         });
     }
 
+    void doInject(final ExtensionContext extensionContext) {
+        TestInstances oTestInstances = extensionContext.getTestInstances()
+                .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
+
+        List<Object> testInstances = oTestInstances.getAllInstances();
+
+        testInstances.forEach(target -> {
+            try {
+               doInject(target, extensionContext);
+            } catch (Exception e) {
+                throw new OpenEJBRuntimeException(e);
+            }
+        });
+    }
+
+    void doInject(Object target, final ExtensionContext context) throws Exception {
+        ApplicationComposers delegate = context.getStore(NAMESPACE)
+                .get(ApplicationComposers.class, ApplicationComposers.class);
+        delegate.enrich(target);
+    }
+
     void addAfterAllReleaser(ExtensionContext context) {
         context.getStore(NAMESPACE).put(AfterAllReleaser.class, new AfterAllReleaser(NAMESPACE));
     }
@@ -108,7 +129,5 @@ abstract class ApplicationComposerPerXYExtensionBase extends ApplicationComposer
     void addAfterEachReleaser(ExtensionContext context) {
         context.getStore(NAMESPACE).put(AfterEachReleaser.class, new AfterEachReleaser(NAMESPACE));
     }
-
-
 }
 

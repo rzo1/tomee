@@ -53,6 +53,7 @@ public class ApplicationComposerPerAllExtension extends ApplicationComposerPerXY
         super.beforeAll(context);
         doInit(context);
         doStart(context);
+        doInject(context);
         addAfterAllReleaser(context);
     }
 }

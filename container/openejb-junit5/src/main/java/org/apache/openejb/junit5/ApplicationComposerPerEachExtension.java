@@ -38,8 +38,10 @@ public class ApplicationComposerPerEachExtension extends ApplicationComposerPerX
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) {
+    public void beforeEach(ExtensionContext context) throws Exception {
         doInit(context);
         doStart(context);
+        doInject(context);
     }
+
 }

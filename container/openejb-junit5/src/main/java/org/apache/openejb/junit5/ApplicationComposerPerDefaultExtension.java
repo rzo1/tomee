@@ -38,6 +38,7 @@ public class ApplicationComposerPerDefaultExtension extends ApplicationComposerP
         if (isPerClassLifecycle(context)) {
             doInit(context);
             doStart(context);
+            doInject(context);
             addAfterAllReleaser(context);
         } else {
             addAfterEachReleaser(context);
@@ -49,6 +50,8 @@ public class ApplicationComposerPerDefaultExtension extends ApplicationComposerP
         if (isPerMethodLifecycle(context)) {
             doInit(context);
             doStart(context);
+            doInject(context);
         }
     }
+
 }

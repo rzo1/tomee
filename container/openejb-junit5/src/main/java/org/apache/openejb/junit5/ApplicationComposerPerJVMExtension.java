@@ -29,7 +29,6 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestInstances;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -72,7 +71,8 @@ public class ApplicationComposerPerJVMExtension extends ApplicationComposerPerXY
     public void beforeAll(ExtensionContext context) throws Exception {
         super.beforeAll(context);
 
-        BASE.start(context.getTestClass().orElse(null));
+        doInit(context);
+        doStart(context);
         if (isPerClassLifecycle(context)) {
             doInject(context);
         }
@@ -85,25 +85,24 @@ public class ApplicationComposerPerJVMExtension extends ApplicationComposerPerXY
         }
     }
 
-    private void doInject(final ExtensionContext extensionContext) {
-        TestInstances oTestInstances = extensionContext.getTestInstances()
-                .orElseThrow(() -> new OpenEJBRuntimeException("No test instances available for the given extension context."));
+    @Override
+    void doInit(final ExtensionContext extensionContext) {
+        //no-op
+    }
 
-        List<Object> testInstances = oTestInstances.getAllInstances();
+    @Override
+    void doStart(final ExtensionContext extensionContext) throws Exception {
+        BASE.start(extensionContext.getTestClass().orElse(null));
+    }
 
-        testInstances.forEach(t -> {
-            try {
-                BASE.composerInject(t);
-            } catch (Exception e) {
-                throw new OpenEJBRuntimeException(e);
-            }
-        });
+    @Override
+    void doInject(Object target, final ExtensionContext context) throws Exception {
+        BASE.composerInject(target);
     }
 
     public static boolean isStarted() {
         return BASE.isStarted();
     }
-
 
 }
 
