@@ -1167,9 +1167,11 @@ public class CxfRsHttpListener implements RsHttpListener {
         final boolean ignoreAutoProviders = "true".equalsIgnoreCase(SystemInstance.get().getProperty(key, serviceConfiguration.getProperties().getProperty(key, "false")));
         final List<Object> additionalProviders = new ArrayList<Object>(ignoreAutoProviders ? Collections.EMPTY_LIST : givenAdditionalProviders);
 
-        for (final Class<?> clzz : application.getClasses()) {
-            if (isProvider(clzz) && !additionalProviders.contains(clzz)) {
-                additionalProviders.add(clzz);
+        if(application != null) {
+            for (final Class<?> clzz : application.getClasses()) {
+                if (isProvider(clzz) && !additionalProviders.contains(clzz)) {
+                    additionalProviders.add(clzz);
+                }
             }
         }
 
