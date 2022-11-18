@@ -240,7 +240,7 @@ public final class ServerProviderFactory extends ProviderFactory {
 
         List<ProviderInfo<? extends Object>> theProviders =
             prepareProviders(custom, busGlobal, allProviders.toArray(), application);
-        super.setCommonProviders(theProviders, Runtime.SERVER);
+        super.setCommonProviders(theProviders, RuntimeType.SERVER);
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(getBus(), provider.getProvider());
 
